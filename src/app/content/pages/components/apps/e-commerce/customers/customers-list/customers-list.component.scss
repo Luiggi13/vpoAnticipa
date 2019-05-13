@@ -1,0 +1,109 @@
+:host {
+    /deep/m-portlet{
+        display:none;
+        &.show{
+            display:block;
+        }
+    }
+    .mat-raised-button{
+        .mat-primary{
+            background-color:red;
+        }
+    }
+	/deep/.m-mat-alert.m-mat-alert--accent{
+        background: #d4edda;
+        font-weight: bold;
+        .m-mat-alert__icon{
+            i{
+                color:#0c5460;
+            }
+        }
+        .m-mat-alert__text{
+            text-align: center;
+            color:#0c5460;
+            display: initial;
+            
+        }
+        .m-mat-alert__close {
+            button{
+                span{
+                    mat-icon{
+                        &.mat-icon{
+                            color:#0c5460;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.searcherImm{
+    // margin-left:20px;
+}
+
+.m-form.m-form--group-seperator-dashed .m-form__group {
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    border-bottom: initial !important;
+background-color: #fff;
+padding: 25px 3px;
+margin-top: 2rem;
+    label{
+        font-weight: 500
+    }
+}
+        .titol{
+            background-color: white;
+        padding: 25px;
+        h3{
+            display: flex;
+
+align-items: center;
+
+font-size: 1.3rem;
+
+font-weight: 500;
+
+font-family: Roboto;
+
+margin: 0;
+
+padding: 0;
+color: #575962;
+        }
+        }
+div.detall--parent__vpoAnticipa{
+    padding: 25px;
+    overflow-x: hidden;
+}
+button.back{
+    position: fixed;
+
+right: 2%;
+
+bottom: 2%;
+
+z-index: 99;
+}
+.col-lg-4{
+    margin-bottom:20px;
+}
+input.codiSocietatInput{
+    width:100%;
+}
+:host {
+    /deep/m-scroll-top .m-scroll-top{
+        bottom: 60px;
+    }
+    /deep/mat-form-field {
+width: 100%;
+    }
+}
+span{
+
+    padding-left: 20px;
+    font-size: 1.1rem;
+    &.upload.procesado{
+    color: #34bfa3;
+    }
+}

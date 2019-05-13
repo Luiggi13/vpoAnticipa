@@ -1,0 +1,7 @@
+{
+  "v1/*": {
+    "target": "http://10.0.2.40",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

@@ -1,0 +1,53 @@
+:host {
+	/deep/ m-spinner-button{
+		width:100%!important;
+	}
+}
+:host {
+	.mat-form-field {
+		width: 100%;
+	}
+	button{
+		display: block;
+		width:100%!important;
+		border: none;
+		border-radius: 3px;
+		cursor: pointer;
+white-space: nowrap;
+text-align: center;
+line-height: 36px;
+	}
+	.mat-raised-button{
+		.mat-primary{
+			display: block;
+			width:100%!important;
+		}
+	}
+}
+		
+.header__logo-arnal{
+	float:left;
+	text-align:center;
+	width: 100%;
+}
+.mat-raised-button{
+	.mat-primary{
+		display: block;
+		width: 100%
+	}
+}
+.input.mat-input-element{
+	border-bottom:1px solid red!important;
+}
+m-spinner-button{
+	width:100%!important;
+}
+
+.m-login__action.m-login__action--fit{position:relative;}
+.form-control-feedback{
+	position: absolute;
+	color:red;
+top: -45px;
+width: 100%;
+text-align: center;
+}
