@@ -102,7 +102,6 @@ export class AuthenticationService implements AuthService {
 	public login(credential: Credential): Observable<any> {
 		// Expecting response from API
 		// tslint:disable-next-line:max-line-length
-		// {"id":1,"username":"admin","password":"demo","email":"admin@demo.com","accessToken":"access-token-0.022563452858263444","refreshToken":"access-token-0.9348573301432961","roles":["ADMIN"],"pic":"./assets/app/media/img/users/user4.jpg","fullname":"Mark Andre"}
 		return this.http.get<AccessData>(this.API_URL + this.API_ENDPOINT_LOGIN + '?' + this.util.urlParam(credential)).pipe(
 			map((result: any) => {
 				if (result instanceof Array) {
