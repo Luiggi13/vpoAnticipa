@@ -106,7 +106,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 		}
 		window.localStorage.setItem('email', this.myInput.nativeElement.value);
 
-		var myUserPass = "{ 'username':'" + user + "' , 'password':'" + pass + "'}";
+		var myUserPass = '{ "username":"' + user + '","password":"' + pass + '}';
 		// console.log('what: ' + myUserPass);
 
 		//  return this.router.navigate(['anticipa']);

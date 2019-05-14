@@ -22,7 +22,6 @@
 		<!-- <button (click)="getval()" mat-raised-button matTooltip="Create new customer" color="primary" type="button">
 			<span translate="ECOMMERCE.CUSTOMERS.NEW_CUSTOMER">New Customer</span>
 		</button> -->
-		
 		<button (click)="getval()" mat-raised-button matTooltip="Actualizar datos de la tabla" color="primary" type="button">
 				<mat-icon>update</mat-icon> Actualizar datos
 			</button>
@@ -46,6 +45,7 @@
 				<div class="row align-items-center">
 
 					<div class="col-md-12 m--margin-bottom-10-mobile" *ngIf="kindUser == 'admin'">
+
 						<div class="row" style="margin-bottom:15px;" >
 							<div class="col-md-12">
 							  <input type="file" accept="file/xls" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;" max-file-size="40">
@@ -239,7 +239,7 @@
 		<!-- start: BOTTOM -->
 		<div class="mat-table__bottom">
 			<!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
-			 <!-- <mat-spinner [diameter]="20" *ngIf="dataSource.loading$ | async"></mat-spinner> -->
+			 <mat-spinner [diameter]="20" *ngIf="isLoading"></mat-spinner>
 			<!-- MATERIAL PAGINATOR | Binded to dasources -->
 			<!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
 			<mat-paginator [pageSize]="10" [pageSizeOptions]="[1, 5, 10,25,50,100]" [showFirstLastButtons]="true"></mat-paginator>
@@ -258,10 +258,10 @@
 		<ng-container mPortletHeadTitle *ngIf="showDetails == true">
 				<div class="form-group m-form__group row titol">
 					<h3>Detall immoble</h3>
-					</div>
 					<button (click)="showDetailsProperty()" mat-raised-button matTooltip="Ver detalle del immueble" color="primary" type="button">
 						<mat-icon>developer_board</mat-icon> Ocultar detalle del immueble
 					</button>
+					</div>
 			<!-- For localisations we use @ngx-translate | See off. documentations => https://github.com/ngx-translate/core -->
 			<!-- Localization libraries (en/fr) are here => '../../../.././config/i18n/en.ts|fr.ts' -->
 		</ng-container>

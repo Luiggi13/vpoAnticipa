@@ -86,7 +86,7 @@ displayedColumns: string[] = ['select', 'X_ID','X_CODI_IMMOBLE','X_ID_CURT','X_T
   val:any;
   dataSource = new MatTableDataSource(ELEMENT_DATA);
   selection = new SelectionModel<MyOwnData>(true, []);
-  
+	isLoading = true;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('searchInput') searchInput: ElementRef;
@@ -151,6 +151,8 @@ public uploadFile = (files) => {
   }
 
   getval(){
+		this.isLoading = true;
+
 	ELEMENT_DATA=[];
 	let headers = new HttpHeaders({
 		'Content-Type': 'application/json',
@@ -158,6 +160,7 @@ public uploadFile = (files) => {
 		// 'Authorization': 'Bearer adadasda'
 	});
     this.http.get<MyOwnData>(`${this.apiUrl}/api/report/anticipa/`, {headers: headers}).subscribe(data => {
+			this.isLoading = false;
       this.val= data;
       this.dataSource = new MatTableDataSource(this.val);
     // this.dataSource = new MatTableDataSource(this.val);
@@ -165,6 +168,7 @@ public uploadFile = (files) => {
     this.dataSource.paginator = this.paginator;
     },
     error =>{
+			this.isLoading = false;
       console.log('mi error en getval() : ', error);
     });
 

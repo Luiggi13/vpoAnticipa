@@ -15,25 +15,23 @@ export class PortalAuthService {
     ) {
 	}
 
-isAutenticated(param){
-		if( !this.mytoken || this.mytoken == null || this.mytoken == undefined || this.mytoken == ''||
-		!this.usertype || this.usertype == null || this.usertype == undefined || this.usertype == ''
-		){
-            this.router.navigate([param]);
-            console.log('no autenticado');
-		} else{
+isAutenticated(param) {
+		if ( this.mytoken  !== undefined && this.usertype !== undefined ) {
             console.log('autenticado');
+		} else if ( this.mytoken  === undefined && this.usertype === undefined ) {
+            console.log('no autenticado');
+            this.router.navigate(['login']);
 		}
     }
-    wantLogout(param: string){
-        if(param == 'yes'){
+    wantLogout(param: string) {
+        if (param === 'yes') {
             window.localStorage.removeItem('token');
-            window.localStorage.removeItem('usertype');        
-            window.localStorage.removeItem('email');        
-            window.localStorage.removeItem('usuario');        
+            window.localStorage.removeItem('usertype');
+            window.localStorage.removeItem('email');
+            window.localStorage.removeItem('usuario');
             this.router.navigate(['login']);
 
-        }else{
+        } else {
             this.isAutenticated('login');
         }
 
