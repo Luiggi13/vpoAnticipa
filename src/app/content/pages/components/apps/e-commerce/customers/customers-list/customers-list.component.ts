@@ -61,13 +61,6 @@ export interface MyOwnData {
 			this.save.emit(this.rowData);
 		}
 	}
-// Table with EDIT item in MODAL
-// ARTICLE for table with sort/filter/paginator
-// https://blog.angular-university.io/angular-material-data-table/
-// https://v5.material.angular.io/components/table/overview
-// https://v5.material.angular.io/components/sort/overview
-// https://v5.material.angular.io/components/table/overview#sorting
-// https://www.youtube.com/watch?v=NSt9CI3BXv4
 @Component({
 	selector: 'm-customers-list',
 	templateUrl: './customers-list.component.html',
@@ -87,14 +80,12 @@ export class CustomersListComponent implements AfterViewInit, OnInit {
     { name: 'Company' },
     { name: 'Gender' }
   ];
-	// @ViewChild(DatatableComponent) table: DatatableComponent;claseColumna = 'idRegistreCol';
 	@ViewChild(DatatableComponent) table: DatatableComponent;
 
 	apiUrl = 'http://10.0.0.40';
 	showPos = true;
-	// api online
-	// apiUrl = 'https://5ccbddde08622a00147aa73b.mockapi.io/v1';
-	todos$: any; // para detalle de immueble
+
+	todos$: any; 
 	length = 100;
   pageSize = 1;
   pageSizeOptions: number[] = [5, 10, 25, 100];
@@ -127,7 +118,7 @@ export class CustomersListComponent implements AfterViewInit, OnInit {
 					valuePrepareFunction:(cell,row)=>{
 						return `<a title="See Detail Product" (click)="prova(${row.X_ID})"> ${row} / ${cell}<i class="ion-edit"></i></a>`
 					},
-					filter:false       
+					filter: false
 				},
 				{
 					X_ID:{
@@ -180,8 +171,7 @@ export class CustomersListComponent implements AfterViewInit, OnInit {
 		}
 		}
 	};
-	
-	
+
 	constructor(
 		private authNoticeService: AuthNoticeService,
 		private customersService: CustomersService,
@@ -398,7 +388,7 @@ for (let i = this.arraychecks.length - 1; i >= 0; i--) {
   findIndexToUpdate(type) {
     return type.id === this;
 	}
-	
+
 	myNotice(){
 		this.authNoticeService.onNoticeChanged$.subscribe(
 			(notice: AuthNotice) => {
@@ -407,8 +397,7 @@ for (let i = this.arraychecks.length - 1; i >= 0; i--) {
 			}
 		);
 	}
-	/** LOAD DATA */
-// displayedColumns: string[] = ['select','X_CODI_IMMOBLE','X_CODI_SOCIETAT', 'X_DIRECCIO_COMPLERTA' ,'X_ID_CURT','X_TIPUS_IMMOBLE','X_CODI_PROMOCIO','X_PROMOCIO','actions'];
+
 
 
 setPageSizeOptions(setPageSizeOptionsInput: string) {
@@ -416,7 +405,6 @@ setPageSizeOptions(setPageSizeOptionsInput: string) {
 }
 ngOnInit() {
 	this.authPortal.isAutenticated('login');
-	// this.checkboxValue = this.check1.nativeElement.value;
 }
 // upload
 refreshValueCheck() {
@@ -437,7 +425,6 @@ public uploadFile = (files) => {
     let headers = new HttpHeaders({
       // 'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + this.mytoken
-      // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjEiLCJuYmYiOjE1NTY1MTg2NDIsImV4cCI6MTU1NzEyMzQ0MiwiaWF0IjoxNTU2NTE4NjQyfQ.cnSj_DXMI-9nxWNT7djX1ExkFQ8EM96eMyPDb1ZjlR8'
     });
     headers.append('Accept', '*/*');
     // let headers = new HttpHeaders().set('Accept', '*/*');
@@ -458,9 +445,8 @@ public uploadFile = (files) => {
           this.message = 'Archivo procesado';
           this.onUploadFinished.emit(event.body);
           this.progress = 0;
-		  location.reload;
+		  		location.reload;
 	  this.getval();
-		  
         }
       });
   }
@@ -480,14 +466,11 @@ public uploadFile = (files) => {
 	let headers = new HttpHeaders({
 		'Content-Type': 'application/json',
 		 'Authorization': 'Bearer ' + this.mytoken
-		// 'Authorization': 'Bearer adadasda'
 	});
     this.http.get<MyOwnData>(`${this.apiUrl}/api/report/anticipa/`, {headers: headers}).subscribe(data => {
 			this.isLoading = false;
 			this.val = data;
-			
       this.dataSource = new MatTableDataSource(this.val);
-    // this.dataSource = new MatTableDataSource(this.val);
 	this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     },
@@ -496,7 +479,6 @@ public uploadFile = (files) => {
       console.log('mi error en getval() : ', error);
     });
 
-    
   }
   ngAfterViewInit() {
 		this.getval();
@@ -610,21 +592,16 @@ exportToExcel(json:any[],excelFileName:string): void{
 
 	lanzarUnRegistro(flat){
 		console.log(flat);
-		// console.log(window.localStorage.getItem('token'));
-			// this.todos$ = this.peopleService.fetchUnRegistro2();
 			let headers = new HttpHeaders({
 			  'Content-Type': 'application/json',
 			  'Authorization': 'Bearer ' + this.mytoken
-			  // 'Authorization': 'Bearer ' + this.mytoken
 			});
 			headers.append('Accept', '*/*');
-			//return this.todos$ = this.http.get(`http://localhost:1414/tt/users/${flat}/`);
 			this.showDetailsProperty();
 			return this.todos$ = this.http.get(`${this.apiUrl}/api/report/anticipa/item?id=${flat}`,{headers:headers});
 			//  return this.todos$ = this.userService.getUsersJsonone(flat,this.mytoken);
 			// http://10.0.0.40/api/Report/anticipa/item?id=4000
 		 }
-		 
 		 toggleCols(colId, estado) {
 			 var select: string = 'select';
 			 var actions: string = 'actions';

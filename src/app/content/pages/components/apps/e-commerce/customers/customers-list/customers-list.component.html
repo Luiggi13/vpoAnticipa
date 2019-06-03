@@ -1,12 +1,6 @@
 <m-alert *ngIf="hasFormErrors" type="accent" [showCloseButton]="true" [duration]="50000" (close)="onAlertClose($event)">
   Mostrando el detalle del immueble {{idImmueble}} con código de immueble : {{codiImmoble}}
 	</m-alert> 
-		<div *ngFor="let key of orderCols;let columnas">
-				<button (click)="setupTable(columnas.nameCol)" mat-raised-button matTooltip="Hide column id" color="primary" type="button">
-						<span>pass to function new order - {{columnas.visible}}</span>
-					</button> 
-	  </div>
-<!-- STYCKY PORTLET CONTROL | See structure => /metronic/sticky-form-actions -->
 <m-portlet [ngClass]="{'show' : showDetails == false}">
 	
 	<ng-container mPortletHeadTitle>
@@ -23,14 +17,14 @@
 	
 	</ng-container>
 	
-	<ng-container mPortletBody>
+	<!-- <ng-container mPortletBody>
 
 
         <div>
 			<ng2-smart-table [settings]="settings" [source]="val" (custom)="prova($event)"></ng2-smart-table>
 		</div>		
 
-	</ng-container>
+	</ng-container> -->
 	<!-- end::Body -->
 
 </m-portlet>
