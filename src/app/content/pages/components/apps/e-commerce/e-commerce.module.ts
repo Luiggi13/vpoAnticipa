@@ -39,7 +39,11 @@ import { SpecificationEditDialogComponent } from './products/_subs/specification
 // Orders
 import { OrdersListComponent } from './orders/orders-list/orders-list.component';
 import { OrderEditComponent } from './orders/order-edit/order-edit.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+
 // Material
+
 import {
 	MatInputModule,
 	MatPaginatorModule,
@@ -64,6 +68,7 @@ import {
 	MatTooltipModule
 } from '@angular/material';
 import { environment } from '../../../../../../environments/environment';
+import { TableFuncs } from './customers/customers-list/table-funcs';
 
 const routes: Routes = [
 	{
@@ -105,6 +110,8 @@ const routes: Routes = [
 
 @NgModule({
 	imports: [
+		Ng2SmartTableModule,
+		NgxDatatableModule,
 		MatDialogModule,
 		CommonModule,
 		HttpClientModule,
@@ -135,6 +142,7 @@ const routes: Routes = [
 		environment.isMockEnabled ? HttpClientInMemoryWebApiModule.forFeature(FakeApiService) : []
 	],
 	providers: [
+		TableFuncs,
 		// InterceptService,
       	// {
         // 	provide: HTTP_INTERCEPTORS,

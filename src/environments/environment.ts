@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://www.mockapi.io/projects/5ccbddde08622a00147aa73c',
-    apiUrlServer: 'https://www.mockapi.io/projects/5ccbddde08622a00147aa73c',
+  apiUrl: 'http://10.0.0.40',
+    apiUrlServer: 'http://10.0.0.40',
   isMockEnabled: false // You have to switch this, when your real back-end is done
 };

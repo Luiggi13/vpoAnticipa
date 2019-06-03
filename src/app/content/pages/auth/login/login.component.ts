@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 	/* colores console */
 
 	/* colores console */
-	public model: any = { email: 'admin@demo.com', password: 'demo' };
+	public model: any = { email: 'eribes@arnal.es', password: 'ukA5uLqc8k' };
 
 	errorResponse = '';
 	showErrorLogin = false;
@@ -98,29 +98,30 @@ export class LoginComponent implements OnInit, OnDestroy {
 	}
 
 	toAPI(user, pass) {
-		let headers = new HttpHeaders({
+		const headers = new HttpHeaders({
 			'Content-Type': 'application/json'
 		});
-		let options = {
+		const options = {
 			headers: headers
 		}
 		window.localStorage.setItem('email', this.myInput.nativeElement.value);
 
-		var myUserPass = '{ "username":"' + user + '","password":"' + pass + '}';
+		const myUserPass = '{ "username":"' + user + '","password":"' + pass + '"}';
 		// console.log('what: ' + myUserPass);
 
 		//  return this.router.navigate(['anticipa']);
-		return this.http.post(`http://10.0.2.40/api/Login/login`, myUserPass, options)
+		return this.http.post(`http://10.0.0.40/api/login/login`, myUserPass, options)
 			.subscribe(data => {
 				this.value200 = true;
 				this.value401 = false;
 				this.value400 = false;
-				var myTok = data;
+				const myTok = data;
 				//   console.log(myTok['token']);
 				window.localStorage.setItem('token', myTok['token']);
 				window.localStorage.setItem('usertype', 'user');
 
-				if (this.myInput.nativeElement.value == 'eferro@arnal.es' || this.myInput.nativeElement.value == 'dplanas@arnal.es' || this.myInput.nativeElement.value == 'eribes@arnal.es') {
+				if (this.myInput.nativeElement.value == 'eferro@arnal.es' || this.myInput.nativeElement.value == 'dplanas@arnal.es'
+				|| this.myInput.nativeElement.value == 'eribes@arnal.es') {
 					// this.errorResponse = data['message'];
 					localStorage.setItem('usertype', 'admin');
 				} else {

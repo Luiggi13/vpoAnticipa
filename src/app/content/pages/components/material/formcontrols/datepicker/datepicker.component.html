@@ -13,10 +13,11 @@
 				<div class="m-separator m-separator--dashed"></div>
 				<div class="m-section__content">
 					<mat-form-field>
-						<input matInput [matDatepicker]="picker" placeholder="Choose a date">
+						<input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="fecha_nac">
 						<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-						<mat-datepicker #picker></mat-datepicker>
+						<mat-datepicker #picker [(ngModel)]="fecha_nac"></mat-datepicker>
 					</mat-form-field>
+					{{fecha_nac | date}}
 				</div>
 			</div>
 		</m-material-preview>

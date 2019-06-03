@@ -1,3 +1,10 @@
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/assets/app.css';
+
+// @import '~@swimlane/ngx-datatable/release/themes/material.css';
+@import "~@swimlane/ngx-datatable/release/themes/bootstrap.css";
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+
 :host {
     /deep/m-portlet{
         display:none;
@@ -5,6 +12,19 @@
             display:block;
         }
     }
+    /deep/ng2-smart-table{
+        width: 100% !important;
+    }
+    /deep/mat-header-row.mat-table-sticky{
+        background-color: #f2f2f2;
+    }
+    /deep/mat-header-cell.idRegistreCol{
+        flex: 0 0 75px;
+     }
+     /deep/.ngx-datatable{
+        width:100%;
+    }
+    
     .mat-raised-button{
         .mat-primary{
             background-color:red;
@@ -57,7 +77,7 @@ margin-top: 2rem;
         padding: 25px;
         h3{
             display: flex;
-
+width:80%;
 align-items: center;
 
 font-size: 1.3rem;
@@ -98,6 +118,23 @@ input.codiSocietatInput{
     /deep/mat-form-field {
 width: 100%;
     }
+    /deep/mat-cell.mat-column-actions {
+cursor: pointer;
+    }
+    /deep/mat-cell.mat-column-X_CODI_IMMOBLE {
+cursor: pointer;
+text-decoration:underline;
+color: #df0000;
+    }
+    /deep/mat-radio-button {
+        width: 33%;
+        float: left;
+        padding: 0;
+        margin: 0;
+    }
+    /deep/mat-radio-group {
+width: 100%;
+    }
 }
 span{
 
@@ -107,3 +144,52 @@ span{
     color: #34bfa3;
     }
 }
+button.btnDetall{
+    float: right;
+
+display: flex;
+
+flex: content;
+}
+label{
+    &.m-checkbox--solid,&.m-checkbox--bold{
+        width: 33.3%;
+        &.estado__numero1{color:#34bfa3;font-weight: 500;}
+        &.estado__numero2{color:#716aca;font-weight: 500;}
+        &.estado__numero3{color:#df0000;font-weight: 500;}
+        &.estado__numero4{color:#fff70f;font-weight: 500;}
+        &.estado__numero5{color:#248f00;font-weight: 500;}
+        &.estado__numero6{color:#00028f;font-weight: 500;}
+    }
+}
+span{
+    &.inputState{
+        width:20px;
+        height:20px;
+    }
+}
+h4{
+    margin-bottom: 10px;
+}
+
+.m-radio > span {
+    width:20px;
+    height: 20px;
+}
+
+.mat-table__wrapper {
+    min-height: 10px;
+    max-height: 800px;
+    overflow: auto;
+  }
+  
+  table {
+    width: 100%;
+  }
+  mat-header-cell.actions{
+    width:2%
+ }
+
+ h3.m-portlet__head-text{
+     background: initial;
+ }

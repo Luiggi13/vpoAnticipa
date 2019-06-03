@@ -102,8 +102,8 @@ export class datosDBService {
 	});
 	let options = {
 		headers: headers
-	}
+	};
 	// return this.http.get('http://localhost:1414/tt/users/',{headers:headers});
-		 return this.http.get(API_CUSTOMERS_URL,{headers:headers}); 
+		 return this.http.get(API_CUSTOMERS_URL, {headers: headers});
 	  }
 }

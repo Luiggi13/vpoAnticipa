@@ -20,6 +20,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/@swimlane/ngx-datatable/release/themes/bootstrap.css",
               "src/styles.scss",
               "src/assets/vendors/base/vendors.bundle.css",
               "src/assets/demo/default/base/style.bundle.css",
@@ -34,13 +35,13 @@
             "production": {
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true,
               "extractCss": true,
-              "namedChunks": false,
+              "namedChunks": true,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true,
+              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

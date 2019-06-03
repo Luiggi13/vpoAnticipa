@@ -488,6 +488,7 @@ const moment = _rollupMoment || _moment;
 	  ],
 })
 export class DatepickerComponent implements OnInit {
+  fecha_nac;
 
 	exampleBasicDatepicker;
 	exampleDatepickerStartDate;
