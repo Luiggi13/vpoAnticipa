@@ -1,114 +1,125 @@
-<m-alert *ngIf="hasFormErrors" type="accent" [showCloseButton]="true" [duration]="50000" (close)="onAlertClose($event)">
-  Mostrando el detalle del immueble {{idImmueble}} con código de immueble : {{codiImmoble}}
-	</m-alert> 
-<m-portlet [ngClass]="{'show' : showDetails == false}">
-	
-	<ng-container mPortletHeadTitle>
-		<div class="m-portlet__head-title">
-			<h3 class="m-portlet__head-text">
-				<span translate="ECOMMERCE.CUSTOMERS.CUSTOMERS_LIST">Tabla ng2-smart-table</span>
-			</h3>
-		</div>
-	
-	</ng-container>
-	
-	<ng-container mPortletHeadTools>
-		head tools
-	
-	</ng-container>
-	
-	<!-- <ng-container mPortletBody>
+<m-alert
+  *ngIf="hasFormErrors"
+  type="accent"
+  [showCloseButton]="true"
+  [duration]="50000"
+  (close)="onAlertClose($event)"
+>
+  Mostrando el detalle del immueble {{ idImmueble }} con código de immueble :
+  {{ codiImmoble }}
+</m-alert>
 
+<m-portlet [ngClass]="{ show: showDetails == false }">
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '../../_core/models/data-sources/_base.datasource.ts' (loading$) -->
 
-        <div>
-			<ng2-smart-table [settings]="settings" [source]="val" (custom)="prova($event)"></ng2-smart-table>
-		</div>		
+  <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+  <ng-container mPortletHeadTitle>
+    <div class="m-portlet__head-title">
+      <h3 class="m-portlet__head-text">
+        <span translate="ECOMMERCE.CUSTOMERS.CUSTOMERS_LIST"
+          >Lista de immuebles</span
+        >
+      </h3>
+    </div>
+    <!-- For localisations we use @ngx-translate | See off. documentations => https://github.com/ngx-translate/core -->
+    <!-- Localization libraries (en/fr) are here => '../../../.././config/i18n/en.ts|fr.ts' -->
+  </ng-container>
 
-	</ng-container> -->
-	<!-- end::Body -->
-
-</m-portlet>
-<m-portlet [ngClass]="{'show' : showDetails == false}">
-	<!-- PORTLET LOADING | Binded to TABLE Datasource -->
-	<!-- See prop => '../../_core/models/data-sources/_base.datasource.ts' (loading$) -->
-	
-	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
-	<ng-container mPortletHeadTitle>
-		<div class="m-portlet__head-title">
-			<h3 class="m-portlet__head-text">
-				<span translate="ECOMMERCE.CUSTOMERS.CUSTOMERS_LIST">Lista de immuebles</span>
-			</h3>
-		</div>
-		<!-- For localisations we use @ngx-translate | See off. documentations => https://github.com/ngx-translate/core -->
-		<!-- Localization libraries (en/fr) are here => '../../../.././config/i18n/en.ts|fr.ts' -->
-	</ng-container>
-	
-	<ng-container mPortletHeadTools>
-		<button (click)="getval()" mat-raised-button matTooltip="Actualizar datos de la tabla" color="primary" type="button">
-				<mat-icon>update</mat-icon> Actualizar datos
-			</button>
-		<button (click)="exportToExcel(dataSource.filteredData, 'my_export')" mat-raised-button matTooltip="Actualizar datos de la tabla" color="primary" type="button">
-				<mat-icon>arrow_downward</mat-icon> Export XLSX
-			</button>
-		<!-- <button (click)="showDetailsProperty()" mat-raised-button matTooltip="Ver detalle del immueble" color="primary" type="button">
+  <ng-container mPortletHeadTools>
+    <button
+      (click)="getval()"
+      mat-raised-button
+      matTooltip="Actualizar datos de la tabla"
+      color="primary"
+      type="button"
+    >
+      <mat-icon>update</mat-icon> Actualizar datos
+    </button>
+    <button
+      (click)="exportToExcel(dataSource.filteredData, 'my_export')"
+      mat-raised-button
+      matTooltip="Actualizar datos de la tabla"
+      color="primary"
+      type="button"
+    >
+      <mat-icon>arrow_downward</mat-icon> Export XLSX
+    </button>
+    <!-- <button (click)="showDetailsProperty()" mat-raised-button matTooltip="Ver detalle del immueble" color="primary" type="button">
 				<mat-icon>developer_board</mat-icon> Ver detalle del immueble
 			</button> -->
-		<!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
-		<!-- mat-raised-button | Rectangular contained button w/ elevation  -->
-	</ng-container>
-	<!-- end::Header -->
+    <!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
+    <!-- mat-raised-button | Rectangular contained button w/ elevation  -->
+  </ng-container>
+  <!-- end::Header -->
 
-	<!-- start::Body (attribute: mPortletBody) -->
-	<ng-container mPortletBody>
-		<!-- start::FILTERS & GROUP ACTIONS -->
-		<div class="m-form">
-			<!-- start::FILTERS -->
-			<div class="m-form__filtration">
-				<div class="row align-items-center">
+  <!-- start::Body (attribute: mPortletBody) -->
+  <ng-container mPortletBody>
+    <!-- start::FILTERS & GROUP ACTIONS -->
+    <div class="m-form">
+      <!-- start::FILTERS -->
+      <div class="m-form__filtration">
+        <div class="row align-items-center">
+          <div
+            class="col-md-12 m--margin-bottom-10-mobile"
+            *ngIf="kindUser == 'admin'"
+          >
+            <div class="row" style="margin-bottom:15px;">
+              <div class="col-md-12">
+                <input
+                  type="file"
+                  accept="file/xls"
+                  #file
+                  placeholder="Choose file"
+                  (change)="uploadFile(file.files)"
+                  style="display:none;"
+                  max-file-size="40"
+                />
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  (click)="file.click()"
+                >
+                  Subir Excel
+                </button>
+                <span class="upload" *ngIf="message1">
+                  {{ message1 }}
+                </span>
+                <span class="upload procesado" *ngIf="message">
+                  {{ message }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 m--margin-bottom-10-mobile">
+            <!-- 'm  margin-bottom-10-mobile' for adaptive make-up  -->
+            <div class="m-form__control">
+              <mat-form-field class="filtreSociedad">
+                <mat-select [(value)]="selected" (selectionChange)="tt($event)">
+                  <mat-option value=""
+                    >Selecciona un código de sociedad</mat-option
+                  >
+                  <mat-option value="3005">3005</mat-option>
+                  <mat-option value="3006">3006</mat-option>
+                  <mat-option value="3007">3007</mat-option>
+                  <mat-option value="3015">3015</mat-option>
+                  <mat-option value="3016">3016</mat-option>
+                  <mat-option value="3018">3018</mat-option>
+                  <mat-option value="3038">3038</mat-option>
+                  <mat-option value="3039">3039</mat-option>
+                  <mat-option value="3040">3040</mat-option>
+                  <mat-option value="3051">3051</mat-option>
+                  <mat-option value="3052">3052</mat-option>
+                </mat-select>
+                <mat-hint align="start">
+                  <strong>Filtrado</strong> por nombre</mat-hint
+                >
+              </mat-form-field>
+              <!-- <p>You selected: {{selected}}</p> -->
+            </div>
+          </div>
 
-					<div class="col-md-12 m--margin-bottom-10-mobile" *ngIf="kindUser == 'admin'">
-
-						<div class="row" style="margin-bottom:15px;" >
-							<div class="col-md-12">
-							  <input type="file" accept="file/xls" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;" max-file-size="40">
-							  <button type="button" class="btn btn-success" (click)="file.click()">Subir Excel</button>
-							  <span class="upload" *ngIf="message1">
-								{{message1}}
-							  </span>
-							  <span class="upload procesado" *ngIf="message">
-								{{message}}
-							  </span>
-							</div>
-							
-							
-						  </div> 
-					</div>
-					<div class="col-md-6 m--margin-bottom-10-mobile">
-						<!-- 'm  margin-bottom-10-mobile' for adaptive make-up  -->
-						<div class="m-form__control">
-								<mat-form-field class="filtreSociedad">
-										<mat-select [(value)]="selected" (selectionChange)="tt($event)">
-										  <mat-option value="">Selecciona un código de sociedad</mat-option>
-										  <mat-option value="3005">3005</mat-option>
-										  <mat-option value="3006">3006</mat-option>
-										  <mat-option value="3007">3007</mat-option>
-										  <mat-option value="3015">3015</mat-option>
-										  <mat-option value="3016">3016</mat-option>
-										  <mat-option value="3018">3018</mat-option>
-										  <mat-option value="3038">3038</mat-option>
-										  <mat-option value="3039">3039</mat-option>
-										  <mat-option value="3040">3040</mat-option>
-										  <mat-option value="3051">3051</mat-option>
-										  <mat-option value="3052">3052</mat-option>
-										</mat-select>
-										<mat-hint align="start">
-												<strong>Filtrado</strong> por nombre</mat-hint>
-									  </mat-form-field>
-									  <!-- <p>You selected: {{selected}}</p> -->
-						</div>
-					</div>
-
-					<!-- <div class="col-md-2 m--margin-bottom-10-mobile">
+          <!-- <div class="col-md-2 m--margin-bottom-10-mobile">
 
 						<div class="m-form__control">
 							<mat-form-field class="mat-form-field-fluid">
@@ -123,28 +134,44 @@
 						</div>
 					</div> -->
 
-					<div class="col-md-6 m--margin-bottom-10-mobile searcherImm">
-						<mat-form-field class="mat-form-field-fluid">
-							<input matInput placeholder="Search customer" #searchInput (ngModelChange)="applyFilter($event.target.value)" (keyup)="applyFilter($event.target.value)" placeholder="Buscar immuebles" class="codiSocietatInput">
-							<mat-hint align="start">
-								<strong>Buscar</strong> en todos los campos</mat-hint>
-						</mat-form-field>
-					</div>
-					<div class="col-md-6 m--margin-bottom-10-mobile">
-							<!-- 'm  margin-bottom-10-mobile' for adaptive make-up  -->
-							<div class="m-form__control">
-									<mat-form-field class="filtreSociedad">
-											<mat-select [(value)]="selectedProvincias" (selectionChange)="tt($event)">
-											  <mat-option value="">Selecciona una provincia</mat-option>
-											  <mat-option *ngFor="let o of seasons" value="{{o}}">{{o}}</mat-option>
-											</mat-select>
-											<mat-hint align="start">
-													<strong>Filtrado</strong> por pronvicia: {{ selectedProvincias }}</mat-hint> 
-										  </mat-form-field>
-										  <!-- <p>You selected: {{selected}}</p> -->
-							</div>
-						</div>
-						<!-- <div class="col-md-6">ss</div>
+          <div class="col-md-6 m--margin-bottom-10-mobile searcherImm">
+            <mat-form-field class="mat-form-field-fluid">
+              <input
+                matInput
+                placeholder="Search customer"
+                #searchInput
+                (ngModelChange)="applyFilter($event.target.value)"
+                (keyup)="applyFilter($event.target.value)"
+                placeholder="Buscar immuebles"
+                class="codiSocietatInput"
+              />
+              <mat-hint align="start">
+                <strong>Buscar</strong> en todos los campos</mat-hint
+              >
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 m--margin-bottom-10-mobile">
+            <!-- 'm  margin-bottom-10-mobile' for adaptive make-up  -->
+            <div class="m-form__control">
+              <mat-form-field class="filtreSociedad">
+                <mat-select
+                  [(value)]="selectedProvincias"
+                  (selectionChange)="tt($event)"
+                >
+                  <mat-option value="">Selecciona una provincia</mat-option>
+                  <mat-option *ngFor="let o of seasons" value="{{ o }}">{{
+                    o
+                  }}</mat-option>
+                </mat-select>
+                <mat-hint align="start">
+                  <strong>Filtrado</strong> por pronvicia:
+                  {{ selectedProvincias }}</mat-hint
+                >
+              </mat-form-field>
+              <!-- <p>You selected: {{selected}}</p> -->
+            </div>
+          </div>
+          <!-- <div class="col-md-6">ss</div>
 					<div class="col-md-4 mt-4">
 							<div [hidden]="!messageNotif" [ngClass]="{show: messageNotif, 'alert-danger': type === 'error', 'alert-success': type === 'success', 'alert-info': type === 'info'}" class="m-alert m-alert--outline m-alert--outline-2x alert fade" role="alert" #alertNotice>
 									<span [innerHTML]="messageNotif"></span>
@@ -195,133 +222,209 @@
 								<span class="inputState"></span>
 							</label>
 					</div> -->
-				</div>
-			</div>
-			<!-- end::FILTERS -->
+        </div>
+      </div>
+      <!-- end::FILTERS -->
 
-			<!-- start::GROUP ACTIONS -->
-			<!-- Group actions list: 'Delete selected' | 'Fetch selected' | 'Update status for selected' -->
-			<!-- Group actions are shared for all LISTS | See '../../_shared' folder -->
-			<div class="row align-items-center collapse m-form__group-actions m--margin-top-20 m--margin-bottom-20"
-				[ngClass]="{'show' : selection.selected.length > 0}"><!-- We show 'Group Actions' div if smth are selected -->
-				<div class="col-xl-12">
-					<div class="m-form__group m-form__group--inline">
-						<div class="m-form__label m-form__label-no-wrap">
-							<label class="m--font-bold m--font-danger-">
-								<span translate="ECOMMERCE.COMMON.SELECTED_RECORDS_COUNT"></span> {{ selection.selected.length }}
-							</label>
-							<!-- selectedCountsTitle => function from codeBehind (customer-list.component.ts file) -->
-							<!-- selectedCountsTitle => just returns title of selected items count -->
-							<!-- for example: Selected records count: 4 -->
-						</div>
-						<div class="m-form__control m-form__group--inline">
-							<button mat-raised-button color="accent" matTooltip="Delete selected customers">
-								<mat-icon>delete</mat-icon> Delete All
-							</button>&nbsp;<!-- Call 'delete-entity-dialog' from _shared folder -->
-							<button  mat-raised-button matTooltip="Fetch selected customers">
-								<mat-icon>clear_all</mat-icon> Fetch Selected
-							</button>&nbsp;<!-- Call 'fetch-entity-dialog' from _shared folder -->
-							<button mat-raised-button matTooltip="Update status for selected customers">
-								<mat-icon>update</mat-icon> Update status
-							</button><!-- Call 'update-stated-dialog' from _shared folder -->
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- end::GROUP ACTIONS -->
-		</div>
-		<!-- end::FILTERS & GROUP ACTIONS -->
+      <!-- start::GROUP ACTIONS -->
+      <!-- Group actions list: 'Delete selected' | 'Fetch selected' | 'Update status for selected' -->
+      <!-- Group actions are shared for all LISTS | See '../../_shared' folder -->
+      <div
+        class="row align-items-center collapse m-form__group-actions m--margin-top-20 m--margin-bottom-20"
+        [ngClass]="{ show: selection.selected.length > 0 }"
+      >
+        <!-- We show 'Group Actions' div if smth are selected -->
+        <div class="col-xl-12">
+          <div class="m-form__group m-form__group--inline">
+            <div class="m-form__label m-form__label-no-wrap">
+              <label class="m--font-bold m--font-danger-">
+                <span
+                  translate="ECOMMERCE.COMMON.SELECTED_RECORDS_COUNT"
+                ></span>
+                {{ selection.selected.length }}
+              </label>
+              <!-- selectedCountsTitle => function from codeBehind (customer-list.component.ts file) -->
+              <!-- selectedCountsTitle => just returns title of selected items count -->
+              <!-- for example: Selected records count: 4 -->
+            </div>
+            <div class="m-form__control m-form__group--inline">
+              <button
+                mat-raised-button
+                color="accent"
+                matTooltip="Delete selected customers"
+              >
+                <mat-icon>delete</mat-icon> Delete All</button
+              >&nbsp;<!-- Call 'delete-entity-dialog' from _shared folder -->
+              <button mat-raised-button matTooltip="Fetch selected customers">
+                <mat-icon>clear_all</mat-icon> Fetch Selected</button
+              >&nbsp;<!-- Call 'fetch-entity-dialog' from _shared folder -->
+              <button
+                mat-raised-button
+                matTooltip="Update status for selected customers"
+              >
+                <mat-icon>update</mat-icon> Update status</button
+              ><!-- Call 'update-stated-dialog' from _shared folder -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end::GROUP ACTIONS -->
+    </div>
+    <!-- end::FILTERS & GROUP ACTIONS -->
 
-		<!-- MATERIAL TABLE | Binded to datasources -->
-		<!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
-		<div class="mat-table__wrapper">
+    <!-- MATERIAL TABLE | Binded to datasources -->
+    <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
+    <div class="mat-table__wrapper">
+      <mat-table
+        class="lmat-elevation-z8"
+        [dataSource]="dataSource"
+        matSort
+        matSortActive="id"
+        matSortDirection="asc"
+        matSortDisableClear
+      >
+        <!-- Checkbox Column -->
 
-			<mat-table class="lmat-elevation-z8" [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="asc" matSortDisableClear>
-				<!-- Checkbox Column -->
+        <!-- Table with selection -->
+        <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+            >
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row" class="mat-column-checkbox">
+            <mat-checkbox
+              (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(row) : null"
+              [checked]="selection.isSelected(row)"
+            >
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
 
-				<!-- Table with selection -->
-				<!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
-				<ng-container matColumnDef="select">
-					<mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
-						<mat-checkbox (change)="$event ? masterToggle() : null"
-							[checked]="selection.hasValue() && isAllSelected()"
-							[indeterminate]="selection.hasValue() && !isAllSelected()">
-						</mat-checkbox>
-					</mat-header-cell>
-					<mat-cell *matCellDef="let row" class="mat-column-checkbox">
-						<mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
-						</mat-checkbox>
-					</mat-cell>
-				</ng-container>
-			
-				<ng-container matColumnDef="X_ID">
-					
-					<mat-header-cell *matHeaderCellDef mat-sort-header [ngClass]="this.claseColumna">Id registre</mat-header-cell>
-					<mat-cell *matCellDef="let customer">{{customer.X_ID}}</mat-cell>
-				</ng-container>
+        <ng-container matColumnDef="X_ID">
+          <mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [ngClass]="this.claseColumna"
+            >Id registre</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{ customer.X_ID }}</mat-cell>
+        </ng-container>
 
-				<ng-container matColumnDef="X_CODI_IMMOBLE">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Codi Immoble</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_CODI_IMMOBLE}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_CODI_SOCIETAT">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Codi societat</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_CODI_SOCIETAT}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_DIRECCIO_COMPLERTA">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Adreça</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_DIRECCIO_COMPLERTA}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_POBLACIO_UBICACIO">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Població</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_POBLACIO_UBICACIO}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_PROVINCIA">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Provincia</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_PROVINCIA}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_CALIFICACION_REVISADO_05002">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Calif.Revisada 05002</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_CALIFICACION_REVISADO_05002}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_N_EXPD_CALIF_REVISADO_05003">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Exp.Calif. Rev. 05003</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_N_EXPD_CALIF_REVISADO_05003}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_REGIMEN_1_Revisado_05006">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Regimen 1 Rev. 05006</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_REGIMEN_1_Revisado_05006}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_FECHA_EXPD_CALIF_REVISADO_05004">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Fecha Exp.Cal.Rev. 05004</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_FECHA_EXPD_CALIF_REVISADO_05004}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_PRECIO_MAX_VENTA_REVISADO_05011">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Precio Max.Venta revisado 05011</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_PRECIO_MAX_VENTA_REVISADO_05011}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_COMERCIALIZACION_REVISADO_05009">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Comercialización rev. 05009</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_COMERCIALIZACION_REVISADO_05009}}</mat-cell>
-					</ng-container>
-					
-					<ng-container matColumnDef="X_PRECIO_MAX_RENTA_REVISADO_05013">
-						<mat-header-cell *matHeaderCellDef mat-sort-header>Precio Max.Renta.Rev. 05013</mat-header-cell>
-						<mat-cell *matCellDef="let customer">{{customer.X_PRECIO_MAX_RENTA_REVISADO_05013}}</mat-cell>
-					</ng-container>
-					
-					
-<!-- 				
+        <ng-container matColumnDef="X_CODI_IMMOBLE">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Codi Immoble</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_CODI_IMMOBLE
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_CODI_SOCIETAT">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Codi societat</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_CODI_SOCIETAT
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_DIRECCIO_COMPLERTA">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Adreça</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_DIRECCIO_COMPLERTA
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_POBLACIO_UBICACIO">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Població</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_POBLACIO_UBICACIO
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_PROVINCIA">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Provincia</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_PROVINCIA
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_CALIFICACION_REVISADO_05002">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Calif.Revisada 05002</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_CALIFICACION_REVISADO_05002
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_N_EXPD_CALIF_REVISADO_05003">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Exp.Calif. Rev. 05003</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_N_EXPD_CALIF_REVISADO_05003
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_REGIMEN_1_Revisado_05006">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Regimen 1 Rev. 05006</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_REGIMEN_1_Revisado_05006
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_FECHA_EXPD_CALIF_REVISADO_05004">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Fecha Exp.Cal.Rev. 05004</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_FECHA_EXPD_CALIF_REVISADO_05004
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_PRECIO_MAX_VENTA_REVISADO_05011">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Precio Max.Venta revisado 05011</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_PRECIO_MAX_VENTA_REVISADO_05011
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_COMERCIALIZACION_REVISADO_05009">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Comercialización rev. 05009</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_COMERCIALIZACION_REVISADO_05009
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_PRECIO_MAX_RENTA_REVISADO_05013">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Precio Max.Renta.Rev. 05013</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_PRECIO_MAX_RENTA_REVISADO_05013
+          }}</mat-cell>
+        </ng-container>
+
+        <!-- 				
 				<ng-container matColumnDef="type">
 					<mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
 					<mat-cell *matCellDef="let customer">
@@ -329,116 +432,152 @@
 						<span class="m--font-bold m--font-{{ getItemCssClassByType(customer.type) }}">{{ getItemTypeString(customer.type) }}</span>
 					</mat-cell>
 				</ng-container> -->
-				
-								<!-- <ng-container matColumnDef="status">
+
+        <!-- <ng-container matColumnDef="status">
 									<mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
 									<mat-cell *matCellDef="let customer">
 										<span class="m-badge m-badge--{{ getItemCssClassByStatus(customer.status) }} m-badge--wide">{{  getItemStatusString(customer.status) }}</span>
 									</mat-cell>
 								</ng-container> -->
 
-				<ng-container matColumnDef="actions">
-					<mat-header-cell *matHeaderCellDef width="3%">Accions</mat-header-cell>
-					<mat-cell *matCellDef="let customer">
-						<button mat-icon-button color="primary" matTooltip="View property" (click)="lanzarUnRegistro(customer.X_ID)"><mat-icon>remove_red_eye</mat-icon></button>&nbsp;
-						<!-- <button mat-icon-button color="warn" matTooltip="Delete customer" type="button" (click)="deleteCustomer(customer)"><mat-icon>delete</mat-icon></button>&nbsp;
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef width="3%"
+            >Accions</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="View property"
+              (click)="lanzarUnRegistro(customer.X_ID)"
+            >
+              <mat-icon>remove_red_eye</mat-icon></button
+            >&nbsp;
+            <!-- <button mat-icon-button color="warn" matTooltip="Delete customer" type="button" (click)="deleteCustomer(customer)"><mat-icon>delete</mat-icon></button>&nbsp;
 						<button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="More actions"><mat-icon>more_vert</mat-icon></button>
 						<mat-menu #menu="matMenu">
 							<button mat-menu-item><mat-icon>dialpad</mat-icon><span>Redial</span></button>
 							<button mat-menu-item disabled><mat-icon>voicemail</mat-icon><span>Check voicemail</span></button>
 							<button mat-menu-item><mat-icon>notifications_off</mat-icon><span>Disable alerts</span></button>
 						</mat-menu>  -->
-					</mat-cell>
-				</ng-container>
+          </mat-cell>
+        </ng-container>
 
-				<mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></mat-header-row>
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
 
-				<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-			</mat-table>
-			<div class="mat-table__message" *ngIf="isLoading">Cargando información</div><!-- Message for empty data  -->
-		</div>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      <div class="mat-table__message" *ngIf="isLoading">
+        Cargando información
+      </div>
+      <!-- Message for empty data  -->
+    </div>
 
-		<!-- start: BOTTOM -->
-		<div class="mat-table__bottom">
-			<!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
-			 <mat-spinner [diameter]="20" *ngIf="isLoading"></mat-spinner>
-			<!-- MATERIAL PAGINATOR | Binded to dasources -->
-			<!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
-			<mat-paginator [pageSize]="10" [pageSizeOptions]="[1, 5, 10,25,50,100]" [showFirstLastButtons]="true"></mat-paginator>
-		</div>
-		<!-- end: BOTTOM -->
-	</ng-container>
-	<!-- end::Body -->
-
+    <!-- start: BOTTOM -->
+    <div class="mat-table__bottom">
+      <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+      <mat-spinner [diameter]="20" *ngIf="isLoading"></mat-spinner>
+      <!-- MATERIAL PAGINATOR | Binded to dasources -->
+      <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+      <mat-paginator
+        [pageSize]="10"
+        [pageSizeOptions]="[1, 5, 10, 25, 50, 100]"
+        [showFirstLastButtons]="true"
+      ></mat-paginator>
+    </div>
+    <!-- end: BOTTOM -->
+  </ng-container>
+  <!-- end::Body -->
 </m-portlet>
 
-<div class="detall--parent__vpoAnticipa" [ngClass]="{'show' : showDetails == true}">
-		<!-- PORTLET LOADING | Binded to TABLE Datasource -->
-		<!-- See prop => '../../_core/models/data-sources/_base.datasource.ts' (loading$) -->
-		
-		<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
-		<ng-container mPortletHeadTitle *ngIf="showDetails == true">
-				<div class="form-group m-form__group row titol">
-					<h3>Detall immoble</h3>
-					<button (click)="showDetailsProperty()" mat-raised-button matTooltip="Ver detalle del immueble" color="primary" type="button" class="btnDetall">
-						<mat-icon>developer_board</mat-icon> Ocultar detalle del immueble
-					</button>
-					</div>
-			<!-- For localisations we use @ngx-translate | See off. documentations => https://github.com/ngx-translate/core -->
-			<!-- Localization libraries (en/fr) are here => '../../../.././config/i18n/en.ts|fr.ts' -->
-		</ng-container>
-		
-		<ng-container mPortletHeadTools>
-	
-				
-			<!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
-			<!-- mat-raised-button | Rectangular contained button w/ elevation  -->
-		</ng-container>
-		<!-- end::Header -->
-	
-		<!-- start::Body (attribute: mPortletBody) -->
-		<ng-container mPortletBody *ngIf="showDetails == true">
-			
-			<!-- start::FILTERS & GROUP ACTIONS -->
-			<div class="m-form">
-	
-				<!-- start::GROUP ACTIONS -->
-				<!-- Group actions list: 'Delete selected' | 'Fetch selected' | 'Update status for selected' -->
-				<!-- Group actions are shared for all LISTS | See '../../_shared' folder -->
-				<div class="row align-items-center collapse m-form__group-actions m--margin-top-20 m--margin-bottom-20"
-					[ngClass]="{'show' : selection.selected.length > 0}"><!-- We show 'Group Actions' div if smth are selected -->
-					<div class="col-xl-12">
-						<div class="m-form__group m-form__group--inline">
-							<div class="m-form__label m-form__label-no-wrap">
-								<label class="m--font-bold m--font-danger-">
-									<span translate="ECOMMERCE.COMMON.SELECTED_RECORDS_COUNT"></span> {{ selection.selected.length }}
-								</label>
-								<!-- selectedCountsTitle => function from codeBehind (customer-list.component.ts file) -->
-								<!-- selectedCountsTitle => just returns title of selected items count -->
-								<!-- for example: Selected records count: 4 -->
-							</div>
-							<div class="m-form__control m-form__group--inline">
-								<button mat-raised-button color="accent" matTooltip="Delete selected customers">
-									<mat-icon>delete</mat-icon> Delete All
-								</button>&nbsp;<!-- Call 'delete-entity-dialog' from _shared folder -->
-								<button  mat-raised-button matTooltip="Fetch selected customers">
-									<mat-icon>clear_all</mat-icon> Fetch Selected
-								</button>&nbsp;<!-- Call 'fetch-entity-dialog' from _shared folder -->
-								<button mat-raised-button matTooltip="Update status for selected customers">
-									<mat-icon>update</mat-icon> Update status
-								</button><!-- Call 'update-stated-dialog' from _shared folder -->
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- end::GROUP ACTIONS -->
-			</div>
-			<!-- end::FILTERS & GROUP ACTIONS -->
-	
-			<!-- MATERIAL TABLE | Binded to datasources -->
-			<!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
-			<div class="m-form m-form--group-seperator-dashed">
-					<!-- <table class='table table-stripe' *ngIf="todos$ | async; let todo">
+<div
+  class="detall--parent__vpoAnticipa"
+  [ngClass]="{ show: showDetails == true }"
+>
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '../../_core/models/data-sources/_base.datasource.ts' (loading$) -->
+
+  <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+  <ng-container mPortletHeadTitle *ngIf="showDetails == true">
+    <div class="form-group m-form__group row titol">
+      <h3>Detall immoble</h3>
+      <button
+        (click)="showDetailsProperty()"
+        mat-raised-button
+        matTooltip="Ver detalle del immueble"
+        color="primary"
+        type="button"
+        class="btnDetall"
+      >
+        <mat-icon>developer_board</mat-icon> Ocultar detalle del immueble
+      </button>
+    </div>
+    <!-- For localisations we use @ngx-translate | See off. documentations => https://github.com/ngx-translate/core -->
+    <!-- Localization libraries (en/fr) are here => '../../../.././config/i18n/en.ts|fr.ts' -->
+  </ng-container>
+
+  <ng-container mPortletHeadTools>
+    <!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
+    <!-- mat-raised-button | Rectangular contained button w/ elevation  -->
+  </ng-container>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: mPortletBody) -->
+  <ng-container mPortletBody *ngIf="showDetails == true">
+    <!-- start::FILTERS & GROUP ACTIONS -->
+    <div class="m-form">
+      <!-- start::GROUP ACTIONS -->
+      <!-- Group actions list: 'Delete selected' | 'Fetch selected' | 'Update status for selected' -->
+      <!-- Group actions are shared for all LISTS | See '../../_shared' folder -->
+      <div
+        class="row align-items-center collapse m-form__group-actions m--margin-top-20 m--margin-bottom-20"
+        [ngClass]="{ show: selection.selected.length > 0 }"
+      >
+        <!-- We show 'Group Actions' div if smth are selected -->
+        <div class="col-xl-12">
+          <div class="m-form__group m-form__group--inline">
+            <div class="m-form__label m-form__label-no-wrap">
+              <label class="m--font-bold m--font-danger-">
+                <span
+                  translate="ECOMMERCE.COMMON.SELECTED_RECORDS_COUNT"
+                ></span>
+                {{ selection.selected.length }}
+              </label>
+              <!-- selectedCountsTitle => function from codeBehind (customer-list.component.ts file) -->
+              <!-- selectedCountsTitle => just returns title of selected items count -->
+              <!-- for example: Selected records count: 4 -->
+            </div>
+            <div class="m-form__control m-form__group--inline">
+              <button
+                mat-raised-button
+                color="accent"
+                matTooltip="Delete selected customers"
+              >
+                <mat-icon>delete</mat-icon> Delete All</button
+              >&nbsp;<!-- Call 'delete-entity-dialog' from _shared folder -->
+              <button mat-raised-button matTooltip="Fetch selected customers">
+                <mat-icon>clear_all</mat-icon> Fetch Selected</button
+              >&nbsp;<!-- Call 'fetch-entity-dialog' from _shared folder -->
+              <button
+                mat-raised-button
+                matTooltip="Update status for selected customers"
+              >
+                <mat-icon>update</mat-icon> Update status</button
+              ><!-- Call 'update-stated-dialog' from _shared folder -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end::GROUP ACTIONS -->
+    </div>
+    <!-- end::FILTERS & GROUP ACTIONS -->
+
+    <!-- MATERIAL TABLE | Binded to datasources -->
+    <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
+    <div class="m-form m-form--group-seperator-dashed">
+      <!-- <table class='table table-stripe' *ngIf="todos$ | async; let todo">
 							<thead>
 								<tr>
 									<th>Id registre</th>
@@ -462,435 +601,495 @@
 								</tr>
 							</tbody>
 						</table> -->
-						<div class="contDetalle" *ngIf="todos$ | async; let todo">
+      <div class="contDetalle" *ngIf="todos$ | async; let todo">
 
-						<div class="form-group m-form__group row">
-								<div class="col-lg-3">
-									<label>Id registre:</label>
-									<input class="form-control m-input" value="{{ todo[0].X_ID }}" />
-								</div>
-								<div class="col-lg-3">
-									<label>Codi Immoble:</label>
-									<input class="form-control m-input" value="{{ todo[0].X_CODI_IMMOBLE }}" />
-								</div>
-								<div class="col-lg-3">
-									<label>Id curt:</label>
-									<input class="form-control m-input" value="{{ todo[0].X_ID_CURT }}" />
-								</div>
-								<div class="col-lg-3">
-									<label>Tipus Immoble:</label>
-									<input class="form-control m-input" value="{{ todo[0].X_TIPUS_IMMOBLE }}" />
-								</div>
-								<div class="col-lg-3">
-									<label>Codi promoció:</label>
-									<input class="form-control m-input" value="{{ todo[0].X_CODI_PROMOCIO }}" />
-								</div>
-								<div class="col-lg-3">
-									<label>Promoció:</label>
-									<input class="form-control m-input" value="{{ todo[0].X_PROMOCIO }}" />
-								</div>
-								<div class="col-lg-3">
-									<label>Codi societat:</label>
-									<input class="form-control m-input" value="{{ todo[0].X_CODI_SOCIETAT }}" />
-								</div>
-							</div>
-
-
-	
-
-<!-- 	 -->
-<div class="form-group m-form__group row">
-	<div class="col-lg-4">
-		<label>X_SOCIMI:</label>
-		<span class="form-control m-input">{{ todo[0].X_SOCIMI }}</span>
-	</div>
-	<div class="col-lg-4">
-		<label>X_NOMBRE_SOCIMI:</label>
-		<span class="form-control m-input">{{ todo[0].X_NOMBRE_SOCIMI }}</span>
-	</div>
-	<div class="col-lg-4">
-		<label>X_PORTFOLIO:</label>
-		<span class="form-control m-input">{{ todo[0].X_PORTFOLIO }}</span>
-	</div>
-	<div class="col-lg-4">
-		<label>X_SOCIETAT:</label>
-		<span class="form-control m-input">{{ todo[0].X_SOCIETAT }}</span>
-	</div>
-	<div class="col-lg-4">
-		<label>X_DATA_COMPRA_ADQUISICIO:</label>
-		<span class="form-control m-input">{{ todo[0].X_DATA_COMPRA_ADQUISICIO }}</span>
-	</div>
-	<div class="col-lg-4">
-		<label>X_TIPUS_COMERCIALITZACIO:</label>
-		<span class="form-control m-input">{{ todo[0].X_TIPUS_COMERCIALITZACIO }}</span>
-	</div>
-	<div class="col-lg-4">
-		<label>X_ESTAT_LLOGUER_28_02_2019:</label>
-		<span class="form-control m-input">{{ todo[0].X_ESTAT_LLOGUER_28_02_2019 }}</span>
-	</div>
-	<div class="col-lg-4">
-		<label>X_ESTAT_VENDA:</label>
-		<span class="form-control m-input">{{ todo[0].X_ESTAT_VENDA }}</span>
-	</div>
-	<div class="col-lg-4">
-		<label>X_COMUNITAT_AUTONOMA:</label>
-		<span class="form-control m-input">{{ todo[0].X_COMUNITAT_AUTONOMA }}</span>
-	</div>
-	<div class="col-lg-4">
-		<label>X_PROVINCIA:</label>
-		<span class="form-control m-input">{{ todo[0].X_PROVINCIA }}</span>
-	</div>
-		<div class="col-lg-4">
-<label>X_POBLACIO_UBICACIO:</label>
-<span class="form-control m-input">{{ todo[0].X_POBLACIO_UBICACIO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_OKUPAT:</label>
-<span class="form-control m-input">{{ todo[0].X_OKUPAT }}</span>
-</div>
-</div>
-<div class="form-group m-form__group row">
-
-<div class="col-lg-4">
-<label>X_ZONA:</label>
-<span class="form-control m-input">{{ todo[0].X_ZONA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_VPO:</label>
-<span class="form-control m-input">{{ todo[0].X_VPO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_VPO_REVISADO:</label>
-<span class="form-control m-input">{{ todo[0].X_VPO_REVISADO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_CALIFICACION:</label>
-<span class="form-control m-input">{{ todo[0].X_CALIFICACION }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_CALIFICACION_REVISADO_05002:</label>
-<span class="form-control m-input">{{ todo[0].X_CALIFICACION_REVISADO_05002 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_N_EXPEDIENTE_CALIFICACION:</label>
-<span class="form-control m-input">{{ todo[0].X_N_EXPEDIENTE_CALIFICACION }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_N_EXPD_CALIF_REVISADO_05003:</label>
-<span class="form-control m-input">{{ todo[0].X_N_EXPD_CALIF_REVISADO_05003 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_FECHA_EXPEDIENTE_CALIFICACION:</label>
-<span class="form-control m-input">{{ todo[0].X_FECHA_EXPEDIENTE_CALIFICACION }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_FECHA_EXPD_CALIF_REVISADO_05004:</label>
-<span class="form-control m-input">{{ todo[0].X_FECHA_EXPD_CALIF_REVISADO_05004 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_AÑOS_DE_PROTECCION:</label>
-<span class="form-control m-input">{{ todo[0].X_ANOS_DE_PROTECCION }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_PRIORIDAD_PUBLICACIONES:</label>
-<span class="form-control m-input">{{ todo[0].X_PRIORIDAD_PUBLICACIONES }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_AUTORIZADO_PUBLICACION_:</label>
-<span class="form-control m-input">{{ todo[0].X_AUTORIZADO_PUBLICACION_ }}</span>
-</div>
-</div>
-<div class="form-group m-form__group row">
-
-<div class="col-lg-4">
-<label>X_FECHA_VCTO:</label>
-<span class="form-control m-input">{{ todo[0].X_FECHA_VCTO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_FECHA_VCTO_REVISADO_05005:</label>
-<span class="form-control m-input">{{ todo[0].X_FECHA_VCTO_REVISADO_05005 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_REGIMEN_2:</label>
-<span class="form-control m-input">{{ todo[0].X_REGIMEN_2 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_DOCUMENTACION:</label>
-<span class="form-control m-input">{{ todo[0].X_DOCUMENTACION }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_COMERCIALIZACION:</label>
-<span class="form-control m-input">{{ todo[0].X_COMERCIALIZACION }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_COMERCIALIZACION_REVISADO_05009:</label>
-<span class="form-control m-input">{{ todo[0].X_COMERCIALIZACION_REVISADO_05009 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_CLASE_DE_VPO:</label>
-<span class="form-control m-input">{{ todo[0].X_CLASE_DE_VPO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_CLASE_DE_VPO_REVISADO_05010:</label>
-<span class="form-control m-input">{{ todo[0].X_CLASE_DE_VPO_REVISADO_05010 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_PRECIO_MAX_VENTA:</label>
-<span class="form-control m-input">{{ todo[0].X_PRECIO_MAX_VENTA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_PRECIO_MAX_VENTA_REVISADO_05011:</label>
-<span class="form-control m-input">{{ todo[0].X_PRECIO_MAX_VENTA_REVISADO_05011 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_PRECIO_MAX_RENTA:</label>
-<span class="form-control m-input">{{ todo[0].X_PRECIO_MAX_RENTA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_PRECIO_MAX_RENTA_REVISADO_05013:</label>
-<span class="form-control m-input">{{ todo[0].X_PRECIO_MAX_RENTA_REVISADO_05013 }}</span>
-</div>
-</div>
-<div class="form-group m-form__group row">
-
-<div class="col-lg-4">
-<label>X_PREU_WEB_LLOGUER:</label>
-<span class="form-control m-input">{{ todo[0].X_PREU_WEB_LLOGUER }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_PREU_WEB_VENDA:</label>
-<span class="form-control m-input">{{ todo[0].X_PREU_WEB_VENDA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_INFORMAR_PRICING:</label>
-<span class="form-control m-input">{{ todo[0].X_INFORMAR_PRICING }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_AUTORIZACION_PARA_VENTA:</label>
-<span class="form-control m-input">{{ todo[0].X_AUTORIZACION_PARA_VENTA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_AUTORIZACION_PARA_VENTA_REVISADO_05012:</label>
-<span class="form-control m-input">{{ todo[0].X_AUTORIZACION_PARA_VENTA_REVISADO_05012 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_AUTORIZACION_PARA_RENTA:</label>
-<span class="form-control m-input">{{ todo[0].X_AUTORIZACION_PARA_RENTA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_AUTORIZACION_PARA_RENTA_REVISADO_05014:</label>
-<span class="form-control m-input">{{ todo[0].X_AUTORIZACION_PARA_RENTA_REVISADO_05014 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_VISADO_DEL_CONTRATO:</label>
-<span class="form-control m-input">{{ todo[0].X_VISADO_DEL_CONTRATO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_VISADO_DEL_CONTRATO_REVISADO_05015:</label>
-<span class="form-control m-input">{{ todo[0].X_VISADO_DEL_CONTRATO_REVISADO_05015 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_CLIENTE_INSCRITO_REG_DEM_VPO:</label>
-<span class="form-control m-input">{{ todo[0].X_CLIENTE_INSCRITO_REG_DEM_VPO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_CLIENTE_INSCRITO_REG_DEM_VPO_REVISADO_05016:</label>
-<span class="form-control m-input">{{ todo[0].X_CLIENTE_INSCRITO_REG_DEM_VPO_REVISADO_05016 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_AYDS_CONCEDI_ANTER_PROPIET:</label>
-<span class="form-control m-input">{{ todo[0].X_AYDS_CONCEDI_ANTER_PROPIET }}</span>
-</div>
-
-<div class="col-lg-4">
-<label>X_AYDS_CONCEDI_ANTER_PROPIET_REVISADO_05017:</label>
-<span class="form-control m-input">{{ todo[0].X_AYDS_CONCEDI_ANTER_PROPIET_REVISADO_05017 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_IMPT_AYUDAS_PDTE_DEVOLUCION:</label>
-<span class="form-control m-input">{{ todo[0].X_IMPT_AYUDAS_PDTE_DEVOLUCION }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_IMPT_AYUDAS_PDTE_DEVOLUCION_REVISADO_05018:</label>
-<span class="form-control m-input">{{ todo[0].X_IMPT_AYUDAS_PDTE_DEVOLUCION_REVISADO_05018 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_TIERS:</label>
-<span class="form-control m-input">{{ todo[0].X_TIERS }}</span>
-</div>
-</div>
-
-<div class="form-group m-form__group row">
-
-<div class="col-lg-4">
-<label>X_REGIMEN_1_05006:</label>
-<span class="form-control m-input">{{ todo[0].X_REGIMEN_1_05006 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_REGIMEN_1_Revisado_05006:</label>
-<span class="form-control m-input">{{ todo[0].X_REGIMEN_1_Revisado_05006 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_VPO2:</label>
-<span class="form-control m-input">{{ todo[0].X_VPO2 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_DERECHO_TANTEO_RETRACTO_PREVIO_VENTA_REVISADO_05008:</label>
-<span class="form-control m-input">{{ todo[0].X_DERECHO_TANTEO_RETRACTO_PREVIO_VENTA_REVISADO_05008 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_CALIFICACION_VPO__en_datos_generales_La_N__desmarca_el_flag_y_la_S_lo_marca:</label>
-<span class="form-control m-input">{{ todo[0].X_CALIFICACION_VPO__en_datos_generales_La_N__desmarca_el_flag_y_la_S_lo_marca }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_80045_VPO_igual_que_calificacion_VPO:</label>
-<span class="form-control m-input">{{ todo[0].X_80045_VPO_igual_que_calificacion_VPO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_01004_Regimen:</label>
-<span class="form-control m-input">{{ todo[0].X_01004_Regimen }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_POSESION:</label>
-<span class="form-control m-input">{{ todo[0].X_POSESION }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_NIF_APODERADO:</label>
-<span class="form-control m-input">{{ todo[0].X_NIF_APODERADO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_DIRECCIO_COMPLERTA:</label>
-<span class="form-control m-input">{{ todo[0].X_DIRECCIO_COMPLERTA }}</span>
-</div>
-</div>
-<div class="form-group m-form__group row">
-
-<div class="col-lg-4">
-<label>X_INSTANCIA_ENVIADA:</label>
-<span class="form-control m-input">{{ todo[0].X_INSTANCIA_ENVIADA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_INSTANCIA_RECIBIDA:</label>
-<span class="form-control m-input">{{ todo[0].X_INSTANCIA_RECIBIDA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_RC:</label>
-<span class="form-control m-input">{{ todo[0].X_RC }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_FINCA:</label>
-<span class="form-control m-input">{{ todo[0].X_FINCA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_RASTRO:</label>
-<span class="form-control m-input">{{ todo[0].X_RASTRO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_TESSI:</label>
-<span class="form-control m-input">{{ todo[0].X_TESSI }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_BUKIT:</label>
-<span class="form-control m-input">{{ todo[0].X_BUKIT }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_BUFET:</label>
-<span class="form-control m-input">{{ todo[0].X_BUFET }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_ESTUDIADO_POR:</label>
-<span class="form-control m-input">{{ todo[0].X_ESTUDIADO_POR }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_C:</label>
-<span class="form-control m-input">{{ todo[0].X_C }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_FACTURA_ANALISIS_:</label>
-<span class="form-control m-input">{{ todo[0].X_FACTURA_ANALISIS_ }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_FACTURA_AUTORIZACION_:</label>
-<span class="form-control m-input">{{ todo[0].X_FACTURA_AUTORIZACION_ }}</span>
-</div>
-</div>
-<div class="form-group m-form__group row">
-
-<div class="col-lg-4">
-<label>X_QUASAR_PRIORIZADO_21_12_2018:</label>
-<span class="form-control m-input">{{ todo[0].X_QUASAR_PRIORIZADO_21_12_2018 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_ESTUDIADO_POR_REVISADO:</label>
-<span class="form-control m-input">{{ todo[0].X_ESTUDIADO_POR_REVISADO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_ESTADO_EN_EL_FICHERO_DEFINITIVO_DE_B_VALLES:</label>
-<span class="form-control m-input">{{ todo[0].X_ESTADO_EN_EL_FICHERO_DEFINITIVO_DE_B_VALLES }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_B_VALLES_Y_OTROS_GESTORES:</label>
-<span class="form-control m-input">{{ todo[0].X_B_VALLES_Y_OTROS_GESTORES }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_ESTADO:</label>
-<span class="form-control m-input">{{ todo[0].X_ESTADO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_TASA:</label>
-<span class="form-control m-input">{{ todo[0].X_TASA }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_Columna1:</label>
-<span class="form-control m-input">{{ todo[0].X_Columna1 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_PUBLICABLE_NO_PUBLICABLE:</label>
-<span class="form-control m-input">{{ todo[0].X_PUBLICABLE_NO_PUBLICABLE }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_OBSERVACIONES:</label>
-<span class="form-control m-input">{{ todo[0].X_OBSERVACIONES }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_FECHA_ALTA_PERIMETRO:</label>
-<span class="form-control m-input">{{ todo[0].X_FECHA_ALTA_PERIMETRO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_FECHA_BAJA_PERIMETRO:</label>
-<span class="form-control m-input">{{ todo[0].X_FECHA_BAJA_PERIMETRO }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_FECHA_ASIGNACION_PROVEEDOR:</label>
-<span class="form-control m-input">{{ todo[0].X_FECHA_ASIGNACION_PROVEEDOR }}</span>
-</div>
-</div>
-<div class="form-group m-form__group row">
-<div class="col-lg-4">
-<label>X_TUBO_DE_CARGA_ARNAL:</label>
-<span class="form-control m-input">{{ todo[0].X_TUBO_DE_CARGA_ARNAL }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_Columna2:</label>
-<span class="form-control m-input">{{ todo[0].X_Columna2 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_Columna3:</label>
-<span class="form-control m-input">{{ todo[0].X_Columna3 }}</span>
-</div>
-<div class="col-lg-4">
-<label>X_Columna4:</label>
-<span class="form-control m-input">{{ todo[0].X_Columna4 }}</span>
-</div>
-</div>
-<!-- 	 -->
-						</div>
+		<!-- mod datos finca -->
+        <div class="form-group m-form__group row">
+			<div class="col-lg-12">
+				<h3>Datos de la finca</h3>
+				<hr />
 			</div>
-	
-			<!-- end: BOTTOM -->
+			<div class="col-lg-4 mt-8">
+				<label>X_CODI_IMMOBLE:</label>
+				<span class="form-control m-input">{{ todo[0].X_CODI_IMMOBLE }}</span>
+			</div>
 			
-		</ng-container>
-		
-	</div>
+			<div class="col-lg-4">
+				<label>X_ID_CURT:</label>
+				<span class="form-control m-input">{{ todo[0].X_ID_CURT }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_TIPUS_IMMOBLE:</label>
+				<span class="form-control m-input">{{ todo[0].X_TIPUS_IMMOBLE }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_CODI_PROMOCIO:</label>
+				<span class="form-control m-input">{{ todo[0].X_CODI_PROMOCIO }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_PROMOCIO:</label>
+				<span class="form-control m-input">{{ todo[0].X_PROMOCIO }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_CODI_SOCIETAT:</label>
+				<span class="form-control m-input">{{ todo[0].X_CODI_SOCIETAT }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_SOCIMI:</label>
+				<span class="form-control m-input">{{ todo[0].X_SOCIMI }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_NOMBRE_SOCIMI:</label>
+				<span class="form-control m-input">{{ todo[0].X_NOMBRE_SOCIMI }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_PORTFOLIO:</label>
+				<span class="form-control m-input">{{ todo[0].X_PORTFOLIO }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_SOCIETAT:</label>
+				<span class="form-control m-input">{{ todo[0].X_SOCIETAT }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_DATA_COMPRA_ADQUISICIO:</label>
+				<span class="form-control m-input">{{ todo[0].X_DATA_COMPRA_ADQUISICIO }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_TIPUS_COMERCIALITZACIO:</label>
+				<span class="form-control m-input">{{ todo[0].X_TIPUS_COMERCIALITZACIO }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_ESTAT_LLOGUER_28_02_2019:</label>
+				<span class="form-control m-input">{{ todo[0].X_ESTAT_LLOGUER_28_02_2019 }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_ESTAT_VENDA:</label>
+				<span class="form-control m-input">{{ todo[0].X_ESTAT_VENDA }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_COMUNITAT_AUTONOMA:</label>
+				<span class="form-control m-input">{{ todo[0].X_COMUNITAT_AUTONOMA }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_PROVINCIA:</label>
+				<span class="form-control m-input">{{ todo[0].X_PROVINCIA }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_POBLACIO_UBICACIO:</label>
+				<span class="form-control m-input">{{ todo[0].X_POBLACIO_UBICACIO }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_OKUPAT:</label>
+				<span class="form-control m-input">{{ todo[0].X_OKUPAT }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_ZONA:</label>
+				<span class="form-control m-input">{{ todo[0].X_ZONA }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_PRIORIDAD_PUBLICACIONES:</label>
+				<span class="form-control m-input">{{ todo[0].X_PRIORIDAD_PUBLICACIONES }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_AUTORIZADO_PUBLICACION_:</label>
+				<span class="form-control m-input">{{ todo[0].X_AUTORIZADO_PUBLICACION_ }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_POSESION:</label>
+				<span class="form-control m-input">{{ todo[0].X_POSESION }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_NIF_APODERADO:</label>
+				<span class="form-control m-input">{{ todo[0].X_NIF_APODERADO }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_DIRECCIO_COMPLERTA:</label>
+				<span class="form-control m-input">{{ todo[0].X_DIRECCIO_COMPLERTA }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_RC:</label>
+				<span class="form-control m-input">{{ todo[0].X_RC }}</span>
+			</div>
+			
+			<div class="col-lg-4">
+				<label>X_FINCA:</label>
+				<span class="form-control m-input">{{ todo[0].X_FINCA }}</span>
+			</div>
+			
+			
+		</div>
+		<!-- mod datos finca -->
+		<!-- mod datos vpo -->
+        <div class="form-group m-form__group row">
+				<div class="col-lg-12">
+						<h3>Datos VPO</h3>
+						<hr />
+					</div>
+				<div class="col-lg-4">
+						<label>X_VPO_REVISADO:</label>
+						<span class="form-control m-input">{{ todo[0].X_VPO_REVISADO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_CALIFICACION:</label>
+						<span class="form-control m-input">{{ todo[0].X_CALIFICACION }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_CALIFICACION_REVISADO_05002:</label>
+						<span class="form-control m-input">{{ todo[0].X_CALIFICACION_REVISADO_05002 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_N_EXPEDIENTE_CALIFICACION:</label>
+						<span class="form-control m-input">{{ todo[0].X_N_EXPEDIENTE_CALIFICACION }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_N_EXPD_CALIF_REVISADO_05003:</label>
+						<span class="form-control m-input">{{ todo[0].X_N_EXPD_CALIF_REVISADO_05003 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_FECHA_EXPEDIENTE_CALIFICACION:</label>
+						<span class="form-control m-input">{{ todo[0].X_FECHA_EXPEDIENTE_CALIFICACION }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_FECHA_EXPD_CALIF_REVISADO_05004:</label>
+						<span class="form-control m-input">{{ todo[0].X_FECHA_EXPD_CALIF_REVISADO_05004 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_ANOS_DE_PROTECCION:</label>
+						<span class="form-control m-input">{{ todo[0].X_ANOS_DE_PROTECCION }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_FECHA_VCTO:</label>
+						<span class="form-control m-input">{{ todo[0].X_FECHA_VCTO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_FECHA_VCTO_REVISADO_05005:</label>
+						<span class="form-control m-input">{{ todo[0].X_FECHA_VCTO_REVISADO_05005 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_REGIMEN_2:</label>
+						<span class="form-control m-input">{{ todo[0].X_REGIMEN_2 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_DOCUMENTACION:</label>
+						<span class="form-control m-input">{{ todo[0].X_DOCUMENTACION }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_COMERCIALIZACION:</label>
+						<span class="form-control m-input">{{ todo[0].X_COMERCIALIZACION }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_COMERCIALIZACION_REVISADO_05009:</label>
+						<span class="form-control m-input">{{ todo[0].X_COMERCIALIZACION_REVISADO_05009 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_CLASE_DE_VPO:</label>
+						<span class="form-control m-input">{{ todo[0].X_CLASE_DE_VPO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_CLASE_DE_VPO_REVISADO_05010:</label>
+						<span class="form-control m-input">{{ todo[0].X_CLASE_DE_VPO_REVISADO_05010 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_PRECIO_MAX_VENTA:</label>
+						<span class="form-control m-input">{{ todo[0].X_PRECIO_MAX_VENTA }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_PRECIO_MAX_VENTA_REVISADO_05011:</label>
+						<span class="form-control m-input">{{ todo[0].X_PRECIO_MAX_VENTA_REVISADO_05011 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_PRECIO_MAX_RENTA:</label>
+						<span class="form-control m-input">{{ todo[0].X_PRECIO_MAX_RENTA }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_PRECIO_MAX_RENTA_REVISADO_05013:</label>
+						<span class="form-control m-input">{{ todo[0].X_PRECIO_MAX_RENTA_REVISADO_05013 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_PREU_WEB_LLOGUER:</label>
+						<span class="form-control m-input">{{ todo[0].X_PREU_WEB_LLOGUER }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_PREU_WEB_VENDA:</label>
+						<span class="form-control m-input">{{ todo[0].X_PREU_WEB_VENDA }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_INFORMAR_PRICING:</label>
+						<span class="form-control m-input">{{ todo[0].X_INFORMAR_PRICING }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_AUTORIZACION_PARA_VENTA:</label>
+						<span class="form-control m-input">{{ todo[0].X_AUTORIZACION_PARA_VENTA }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_AUTORIZACION_PARA_VENTA_REVISADO_05012:</label>
+						<span class="form-control m-input">{{ todo[0].X_AUTORIZACION_PARA_VENTA_REVISADO_05012 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_AUTORIZACION_PARA_RENTA:</label>
+						<span class="form-control m-input">{{ todo[0].X_AUTORIZACION_PARA_RENTA }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_AUTORIZACION_PARA_RENTA_REVISADO_05014:</label>
+						<span class="form-control m-input">{{ todo[0].X_AUTORIZACION_PARA_RENTA_REVISADO_05014 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_VISADO_DEL_CONTRATO:</label>
+						<span class="form-control m-input">{{ todo[0].X_VISADO_DEL_CONTRATO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_VISADO_DEL_CONTRATO_REVISADO_05015:</label>
+						<span class="form-control m-input">{{ todo[0].X_VISADO_DEL_CONTRATO_REVISADO_05015 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_CLIENTE_INSCRITO_REG_DEM_VPO:</label>
+						<span class="form-control m-input">{{ todo[0].X_CLIENTE_INSCRITO_REG_DEM_VPO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_CLIENTE_INSCRITO_REG_DEM_VPO_REVISADO_05016:</label>
+						<span class="form-control m-input">{{ todo[0].X_CLIENTE_INSCRITO_REG_DEM_VPO_REVISADO_05016 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_AYDS_CONCEDI_ANTER_PROPIET:</label>
+						<span class="form-control m-input">{{ todo[0].X_AYDS_CONCEDI_ANTER_PROPIET }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_AYDS_CONCEDI_ANTER_PROPIET_REVISADO_05017:</label>
+						<span class="form-control m-input">{{ todo[0].X_AYDS_CONCEDI_ANTER_PROPIET_REVISADO_05017 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_IMPT_AYUDAS_PDTE_DEVOLUCION:</label>
+						<span class="form-control m-input">{{ todo[0].X_IMPT_AYUDAS_PDTE_DEVOLUCION }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_IMPT_AYUDAS_PDTE_DEVOLUCION_REVISADO_05018:</label>
+						<span class="form-control m-input">{{ todo[0].X_IMPT_AYUDAS_PDTE_DEVOLUCION_REVISADO_05018 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_TIERS:</label>
+						<span class="form-control m-input">{{ todo[0].X_TIERS }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_REGIMEN_1_05006:</label>
+						<span class="form-control m-input">{{ todo[0].X_REGIMEN_1_05006 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_VPO2:</label>
+						<span class="form-control m-input">{{ todo[0].X_VPO2 }}</span>
+					</div>
+					
+					
+					
+								
+		</div>
+		<!-- mod datos vpo -->
+		<!-- mod datos gestion -->
+        <div class="form-group m-form__group row">
+				<div class="col-lg-12">
+						<h3>Datos Gestión</h3>
+						<hr />
+					</div>
+				<div class="col-lg-4">
+						<label>X_REGIMEN_1_Revisado_05006:</label>
+						<span class="form-control m-input">{{ todo[0].X_REGIMEN_1_Revisado_05006 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_DERECHO_TANTEO_RETRACTO_PREVIO_VENTA_REVISADO_05008:</label>
+						<span class="form-control m-input">{{ todo[0].X_DERECHO_TANTEO_RETRACTO_PREVIO_VENTA_REVISADO_05008 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_CALIFICACION_VPO__en_datos_generales_La_N__desmarca_el_flag_y_la_S_lo_marca:</label>
+						<span class="form-control m-input">{{ todo[0].X_CALIFICACION_VPO__en_datos_generales_La_N__desmarca_el_flag_y_la_S_lo_marca }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_80045_VPO_igual_que_calificacion_VPO:</label>
+						<span class="form-control m-input">{{ todo[0].X_80045_VPO_igual_que_calificacion_VPO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_01004_Regimen:</label>
+						<span class="form-control m-input">{{ todo[0].X_01004_Regimen }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_INSTANCIA_ENVIADA:</label>
+						<span class="form-control m-input">{{ todo[0].X_INSTANCIA_ENVIADA }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_INSTANCIA_RECIBIDA:</label>
+						<span class="form-control m-input">{{ todo[0].X_INSTANCIA_RECIBIDA }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_TESSI:</label>
+						<span class="form-control m-input">{{ todo[0].X_TESSI }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_BUKIT:</label>
+						<span class="form-control m-input">{{ todo[0].X_BUKIT }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_BUFET:</label>
+						<span class="form-control m-input">{{ todo[0].X_BUFET }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_ESTUDIADO_POR:</label>
+						<span class="form-control m-input">{{ todo[0].X_ESTUDIADO_POR }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_C:</label>
+						<span class="form-control m-input">{{ todo[0].X_C }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_FACTURA_ANALISIS_:</label>
+						<span class="form-control m-input">{{ todo[0].X_FACTURA_ANALISIS_ }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_FACTURA_AUTORIZACION_:</label>
+						<span class="form-control m-input">{{ todo[0].X_FACTURA_AUTORIZACION_ }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_QUASAR_PRIORIZADO_21_12_2018:</label>
+						<span class="form-control m-input">{{ todo[0].X_QUASAR_PRIORIZADO_21_12_2018 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_ESTUDIADO_POR_REVISADO:</label>
+						<span class="form-control m-input">{{ todo[0].X_ESTUDIADO_POR_REVISADO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_ESTADO_EN_EL_FICHERO_DEFINITIVO_DE_B_VALLES:</label>
+						<span class="form-control m-input">{{ todo[0].X_ESTADO_EN_EL_FICHERO_DEFINITIVO_DE_B_VALLES }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_B_VALLES_Y_OTROS_GESTORES:</label>
+						<span class="form-control m-input">{{ todo[0].X_B_VALLES_Y_OTROS_GESTORES }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_ESTADO:</label>
+						<span class="form-control m-input">{{ todo[0].X_ESTADO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_TASA:</label>
+						<span class="form-control m-input">{{ todo[0].X_TASA }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_Columna1:</label>
+						<span class="form-control m-input">{{ todo[0].X_Columna1 }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_PUBLICABLE_NO_PUBLICABLE:</label>
+						<span class="form-control m-input">{{ todo[0].X_PUBLICABLE_NO_PUBLICABLE }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_OBSERVACIONES:</label>
+						<span class="form-control m-input">{{ todo[0].X_OBSERVACIONES }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_FECHA_ALTA_PERIMETRO:</label>
+						<span class="form-control m-input">{{ todo[0].X_FECHA_ALTA_PERIMETRO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_FECHA_BAJA_PERIMETRO:</label>
+						<span class="form-control m-input">{{ todo[0].X_FECHA_BAJA_PERIMETRO }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_FECHA_ASIGNACION_PROVEEDOR:</label>
+						<span class="form-control m-input">{{ todo[0].X_FECHA_ASIGNACION_PROVEEDOR }}</span>
+					</div>
+					
+					<div class="col-lg-4">
+						<label>X_TUBO_DE_CARGA_ARNAL:</label>
+						<span class="form-control m-input">{{ todo[0].X_TUBO_DE_CARGA_ARNAL }}</span>
+					</div>					
+        </div>
+        
+		<!-- mod datos gestion -->
+      
 
-	
+
+      </div>
+    </div>
+  </ng-container>
+</div>

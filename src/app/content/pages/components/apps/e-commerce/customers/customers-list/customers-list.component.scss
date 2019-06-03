@@ -195,4 +195,11 @@ h4{
  }
  .detall--parent__vpoAnticipa h3{
      background: initial!important;
- }
+     color:#575962;
+     line-height: 10px;
+     text-transform: uppercase;
+    }
+.detall--parent__vpoAnticipa .form-group span.form-control {
+    border: 0px solid;
+    padding-left: 0;
+}
