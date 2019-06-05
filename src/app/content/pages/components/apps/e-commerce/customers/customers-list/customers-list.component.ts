@@ -1,4 +1,5 @@
-import { Component,Input, Output,OnInit, ElementRef, ViewChild, ChangeDetectionStrategy, AfterViewInit, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnInit, ElementRef,
+	ViewChild, ChangeDetectionStrategy, AfterViewInit, EventEmitter } from '@angular/core';
 // Material
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatSort, MatSnackBar, MatDialog, PageEvent, MatTableDataSource } from '@angular/material';
