@@ -1,0 +1,613 @@
+<!-- migracion -->
+<!-- migracion -->
+<!-- migracion -->
+<m-portlet [ngClass]="{ show: showDetails == false }">
+  <!-- PORTLET LOADING | Binded to TABLE Datasource -->
+  <!-- See prop => '../../_core/models/data-sources/_base.datasource.ts' (loading$) -->
+
+  <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+  <ng-container mPortletHeadTitle>
+    <div class="m-portlet__head-title">
+      <h3 class="m-portlet__head-text">
+        <span translate="ECOMMERCE.CUSTOMERS.CUSTOMERS_LIST"
+          >Lista de immuebles</span
+        >
+      </h3>
+    </div>
+    <!-- For localisations we use @ngx-translate | See off. documentations => https://github.com/ngx-translate/core -->
+    <!-- Localization libraries (en/fr) are here => '../../../.././config/i18n/en.ts|fr.ts' -->
+  </ng-container>
+
+  <ng-container mPortletHeadTools>
+    <button
+      (click)="getBackend()"
+      mat-raised-button
+      matTooltip="Actualizar datos de la tabla"
+      color="primary"
+      type="button"
+    >
+      <mat-icon>update</mat-icon> Actualizar datos
+    </button>
+    <button
+      (click)="exportToExcel(dataSource.filteredData, 'my_export')"
+      mat-raised-button
+      matTooltip="Actualizar datos de la tabla"
+      color="primary"
+      type="button"
+    >
+      <mat-icon>arrow_downward</mat-icon> Export XLSX
+    </button>
+    <!-- <button (click)="showDetailsProperty()" mat-raised-button matTooltip="Ver detalle del immueble" color="primary" type="button">
+          <mat-icon>developer_board</mat-icon> Ver detalle del immueble
+        </button> -->
+    <!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
+    <!-- mat-raised-button | Rectangular contained button w/ elevation  -->
+  </ng-container>
+  <!-- end::Header -->
+
+  <!-- start::Body (attribute: mPortletBody) -->
+  <ng-container mPortletBody>
+    <!-- start::FILTERS & GROUP ACTIONS -->
+    <div class="m-form">
+      <!-- start::FILTERS -->
+      <div class="m-form__filtration">
+        <div class="row align-items-center">
+          <div
+            class="col-md-12 m--margin-bottom-10-mobile"
+            *ngIf="kindUser == 'admin'"
+          >
+            <div class="row" style="margin-bottom:15px;">
+              <div class="col-md-12">
+                <input
+                  type="file"
+                  accept="file/xls"
+                  #file
+                  placeholder="Choose file"
+                  (change)="uploadFile(file.files)"
+                  style="display:none;"
+                  max-file-size="40"
+                />
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  (click)="file.click()"
+                >
+                  Subir Excel
+                </button>
+                <span class="upload" *ngIf="message1">
+                  {{ message1 }}
+                </span>
+                <span class="upload procesado" *ngIf="message">
+                  {{ message }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+              <div class="col-md-12">
+                  <div class="row">
+                    <h3 class="m-portlet__head-text visibility-columns">
+                        <span>Visibilidad columnas</span>
+                        </h3>
+          
+                    <div class="col-md-4 {{column.def}}" *ngFor="let column of columnDefinitions">
+                      <p>
+                          <label>
+                            <mat-checkbox [(ngModel)]="column.showItem" (ngModelChange)="showFilteredColumns()"><span class="nombre_columna">{{column.def}}</span></mat-checkbox>
+                            
+                          <!-- <input type="checkbox"  [(ngModel)]="column.showItem" (ngModelChange)="showFilteredColumns()"> -->
+                          </label>
+                          </p>
+                    </div>
+                  </div>
+                  <button
+                  (click)="rePintarCols()"
+                  mat-raised-button
+                  matTooltip="Mostrar todas las columnas"
+                  color="primary"
+                  type="button"
+                >
+                  <mat-icon>done_all</mat-icon> Mostrar todas las columnas
+                </button>				
+                </div>
+          
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_ID</mat-label>
+              <input matInput [formControl]="idFilter" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter">
+              <mat-label>X_CODI_SOCIETAT</mat-label>
+              <input matInput [formControl]="codiImmobleFilter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_DIRECCIO_COMPLERTA</mat-label>
+              <input matInput [formControl]="direccioComplertaFilter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_POBLACIO_UBICACIO</mat-label>
+              <input matInput [formControl]="poblacioFilter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_PROVINCIA</mat-label>
+              <input matInput [formControl]="provinciaFilter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_CALIFICACION_REVISADO_05002</mat-label>
+              <input matInput [formControl]="_05002Filter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_N_EXPD_CALIF_REVISADO_05003</mat-label>
+              <input matInput [formControl]="_05003Filter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_REGIMEN_1_Revisado_05006</mat-label>
+              <input matInput [formControl]="_05006Filter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_FECHA_EXPD_CALIF_REVISADO_05004</mat-label>
+              <input matInput [formControl]="_05004Filter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_PRECIO_MAX_VENTA_REVISADO_05011</mat-label>
+              <input matInput [formControl]="_05011Filter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_COMERCIALIZACION_REVISADO_05009</mat-label>
+              <input matInput [formControl]="_05009Filter" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3 m--margin-bottom-10-mobile">
+            <mat-form-field class="filter" floatLabel="never">
+              <mat-label>X_PRECIO_MAX_RENTA_REVISADO_05013</mat-label>
+              <input matInput [formControl]="_05013Filter" />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <!-- end::FILTERS -->
+
+      <!-- start::GROUP ACTIONS -->
+      <!-- Group actions list: 'Delete selected' | 'Fetch selected' | 'Update status for selected' -->
+      <!-- Group actions are shared for all LISTS | See '../../_shared' folder -->
+      <div
+        class="row align-items-center collapse m-form__group-actions m--margin-top-20 m--margin-bottom-20"
+        [ngClass]="{ show: selection.selected.length > 0 }"
+      >
+        <!-- We show 'Group Actions' div if smth are selected -->
+        <div class="col-xl-12">
+          <div class="m-form__group m-form__group--inline">
+            <div class="m-form__label m-form__label-no-wrap">
+              <label class="m--font-bold m--font-danger-">
+                <span
+                  translate="ECOMMERCE.COMMON.SELECTED_RECORDS_COUNT"
+                ></span>
+                {{ selection.selected.length }}
+              </label>
+              <!-- selectedCountsTitle => function from codeBehind (customer-list.component.ts file) -->
+              <!-- selectedCountsTitle => just returns title of selected items count -->
+              <!-- for example: Selected records count: 4 -->
+            </div>
+            <div class="m-form__control m-form__group--inline">
+              <button
+                mat-raised-button
+                color="accent"
+                matTooltip="Delete selected customers"
+              >
+                <mat-icon>delete</mat-icon> Delete All</button
+              >&nbsp;<!-- Call 'delete-entity-dialog' from _shared folder -->
+              <button mat-raised-button matTooltip="Fetch selected customers">
+                <mat-icon>clear_all</mat-icon> Fetch Selected</button
+              >&nbsp;<!-- Call 'fetch-entity-dialog' from _shared folder -->
+              <button
+                mat-raised-button
+                matTooltip="Update status for selected customers"
+              >
+                <mat-icon>update</mat-icon> Update status</button
+              ><!-- Call 'update-stated-dialog' from _shared folder -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end::GROUP ACTIONS -->
+    </div>
+    <!-- end::FILTERS & GROUP ACTIONS -->
+
+    <!-- MATERIAL TABLE | Binded to datasources -->
+    <!-- See off.documentations 'https://material.angular.io/components/table/overview' -->
+    <div class="mat-table__wrapper">
+      <mat-table
+        class="lmat-elevation-z8"
+        [dataSource]="dataSource"
+        matSort
+        matSortActive="id"
+        matSortDirection="asc"
+        matSortDisableClear
+      >
+        <!-- Checkbox Column -->
+
+        <!-- Table with selection -->
+        <!-- https://run.stackblitz.com/api/angular/v1?file=app%2Ftable-selection-example.ts -->
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+            >
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row" class="mat-column-checkbox">
+            <mat-checkbox
+              (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(row) : null"
+              [checked]="selection.isSelected(row)"
+            >
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_ID">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Id registre</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{ customer.X_ID }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_CODI_IMMOBLE">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Codi Immoble</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_CODI_IMMOBLE
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_CODI_SOCIETAT">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Codi societat</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_CODI_SOCIETAT
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_DIRECCIO_COMPLERTA">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Adreça</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_DIRECCIO_COMPLERTA
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_POBLACIO_UBICACIO">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Població</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_POBLACIO_UBICACIO
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_PROVINCIA">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Provincia</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_PROVINCIA
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_CALIFICACION_REVISADO_05002">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Calif.Revisada 05002</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_CALIFICACION_REVISADO_05002
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_N_EXPD_CALIF_REVISADO_05003">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Exp.Calif. Rev. 05003</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_N_EXPD_CALIF_REVISADO_05003
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_REGIMEN_1_Revisado_05006">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Regimen 1 Rev. 05006</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_REGIMEN_1_Revisado_05006
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_FECHA_EXPD_CALIF_REVISADO_05004">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Fecha Exp.Cal.Rev. 05004</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_FECHA_EXPD_CALIF_REVISADO_05004
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_PRECIO_MAX_VENTA_REVISADO_05011">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Precio Max.Venta revisado 05011</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_PRECIO_MAX_VENTA_REVISADO_05011
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_COMERCIALIZACION_REVISADO_05009">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Comercialización rev. 05009</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_COMERCIALIZACION_REVISADO_05009
+          }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="X_PRECIO_MAX_RENTA_REVISADO_05013">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Precio Max.Renta.Rev. 05013</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">{{
+            customer.X_PRECIO_MAX_RENTA_REVISADO_05013
+          }}</mat-cell>
+        </ng-container>
+
+        <!-- 				
+          <ng-container matColumnDef="type">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
+            <mat-cell *matCellDef="let customer">
+              <span class="m-badge m-badge--{{ getItemCssClassByType(customer.type) }} m-badge--dot"></span>&nbsp;
+              <span class="m--font-bold m--font-{{ getItemCssClassByType(customer.type) }}">{{ getItemTypeString(customer.type) }}</span>
+            </mat-cell>
+          </ng-container> -->
+
+        <!-- <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let customer">
+                      <span class="m-badge m-badge--{{ getItemCssClassByStatus(customer.status) }} m-badge--wide">{{  getItemStatusString(customer.status) }}</span>
+                    </mat-cell>
+                  </ng-container> -->
+
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef width="3%"
+            >Accions</mat-header-cell
+          >
+          <mat-cell *matCellDef="let customer">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="View property"
+              (click)="lanzarUnRegistro(customer.X_ID)"
+            >
+              <mat-icon>remove_red_eye</mat-icon></button
+            >&nbsp;
+            <!-- <button mat-icon-button color="warn" matTooltip="Delete customer" type="button" (click)="deleteCustomer(customer)"><mat-icon>delete</mat-icon></button>&nbsp;
+              <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="More actions"><mat-icon>more_vert</mat-icon></button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item><mat-icon>dialpad</mat-icon><span>Redial</span></button>
+                <button mat-menu-item disabled><mat-icon>voicemail</mat-icon><span>Check voicemail</span></button>
+                <button mat-menu-item><mat-icon>notifications_off</mat-icon><span>Disable alerts</span></button>
+              </mat-menu>  -->
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="columnsToDisplay; sticky: true"
+        ></mat-header-row>
+
+        <!-- <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row> -->
+        <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
+      </mat-table>
+      <div class="mat-table__message" *ngIf="isLoading">
+        Cargando información
+      </div>
+      <!-- Message for empty data  -->
+    </div>
+
+    <!-- start: BOTTOM -->
+    <div class="mat-table__bottom">
+      <!-- MATERIAL SPINNER | Url: 'https://material.angular.io/components/progress-spinner/overview' -->
+      <mat-spinner [diameter]="20" *ngIf="isLoading"></mat-spinner>
+      <!-- MATERIAL PAGINATOR | Binded to dasources -->
+      <!-- See off.documentations 'https://material.angular.io/components/paginator/overview' -->
+      <mat-paginator
+        [pageSize]="10"
+        [pageSizeOptions]="[1, 5, 10, 25, 50, 100]"
+        [showFirstLastButtons]="true"
+      ></mat-paginator>
+    </div>
+    <!-- end: BOTTOM -->
+  </ng-container>
+  <!-- end::Body -->
+</m-portlet>
+<!-- migracion -->
+<!-- migracion -->
+<!-- migracion -->
+<!-- migracion -->
+<!-- migracion -->
+<button (click)="getBackend()">Get Backend</button>
+<table
+  mat-table
+  [dataSource]="dataSource"
+  matSort
+  matSortActive="id"
+  matSortDirection="asc"
+  matSortDisableClear
+>
+  <ng-container matColumnDef="X_ID">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_ID
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_ID</mat-label>
+        <input matInput [formControl]="idFilter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">{{ person.X_ID }}</td>
+  </ng-container>
+  <ng-container matColumnDef="X_CODI_SOCIETAT">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      <mat-form-field class="filter">
+        <mat-label>X_CODI_SOCIETAT</mat-label>
+        <input matInput [formControl]="codiImmobleFilter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">{{ person.X_CODI_SOCIETAT }}</td>
+  </ng-container>
+  <ng-container matColumnDef="X_DIRECCIO_COMPLERTA">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_DIRECCIO_COMPLERTA
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_DIRECCIO_COMPLERTA</mat-label>
+        <input matInput [formControl]="direccioComplertaFilter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">{{ person.X_DIRECCIO_COMPLERTA }}</td>
+  </ng-container>
+  <ng-container matColumnDef="X_POBLACIO_UBICACIO">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_POBLACIO_UBICACIO
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_POBLACIO_UBICACIO</mat-label>
+        <input matInput [formControl]="poblacioFilter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">{{ person.X_POBLACIO_UBICACIO }}</td>
+  </ng-container>
+  <ng-container matColumnDef="X_PROVINCIA">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_PROVINCIA
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_PROVINCIA</mat-label>
+        <input matInput [formControl]="provinciaFilter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">{{ person.X_PROVINCIA }}</td>
+  </ng-container>
+  <ng-container matColumnDef="X_CALIFICACION_REVISADO_05002">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_CALIFICACION_REVISADO_05002
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_CALIFICACION_REVISADO_05002</mat-label>
+        <input matInput [formControl]="_05002Filter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">
+      {{ person.X_CALIFICACION_REVISADO_05002 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="X_N_EXPD_CALIF_REVISADO_05003">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_N_EXPD_CALIF_REVISADO_05003
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_N_EXPD_CALIF_REVISADO_05003</mat-label>
+        <input matInput [formControl]="_05003Filter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">
+      {{ person.X_N_EXPD_CALIF_REVISADO_05003 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="X_REGIMEN_1_Revisado_05006">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_REGIMEN_1_Revisado_05006
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_REGIMEN_1_Revisado_05006</mat-label>
+        <input matInput [formControl]="_05006Filter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">
+      {{ person.X_REGIMEN_1_Revisado_05006 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="X_FECHA_EXPD_CALIF_REVISADO_05004">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_FECHA_EXPD_CALIF_REVISADO_05004
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_FECHA_EXPD_CALIF_REVISADO_05004</mat-label>
+        <input matInput [formControl]="_05004Filter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">
+      {{ person.X_FECHA_EXPD_CALIF_REVISADO_05004 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="X_PRECIO_MAX_VENTA_REVISADO_05011">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_PRECIO_MAX_VENTA_REVISADO_05011
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_PRECIO_MAX_VENTA_REVISADO_05011</mat-label>
+        <input matInput [formControl]="_05011Filter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">
+      {{ person.X_PRECIO_MAX_VENTA_REVISADO_05011 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="X_COMERCIALIZACION_REVISADO_05009">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_COMERCIALIZACION_REVISADO_05009
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_COMERCIALIZACION_REVISADO_05009</mat-label>
+        <input matInput [formControl]="_05009Filter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">
+      {{ person.X_COMERCIALIZACION_REVISADO_05009 }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="X_PRECIO_MAX_RENTA_REVISADO_05013">
+    <th class="header" mat-header-cell *matHeaderCellDef>
+      X_PRECIO_MAX_RENTA_REVISADO_05013
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>X_PRECIO_MAX_RENTA_REVISADO_05013</mat-label>
+        <input matInput [formControl]="_05013Filter" />
+      </mat-form-field>
+    </th>
+    <td mat-cell *matCellDef="let person">
+      {{ person.X_PRECIO_MAX_RENTA_REVISADO_05013 }}
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr mat-row *matRowDef="let person; columns: columnsToDisplay"></tr>
+</table>

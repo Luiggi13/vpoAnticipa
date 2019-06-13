@@ -28,15 +28,6 @@
 
   <ng-container mPortletHeadTools>
     <button
-      (click)="resetValues()"
-      mat-raised-button
-      matTooltip="Reset"
-      color="primary"
-      type="button"
-    >
-      <mat-icon>update</mat-icon> Reset
-    </button>
-    <button
       (click)="getval()"
       mat-raised-button
       matTooltip="Actualizar datos de la tabla"
@@ -100,7 +91,104 @@
                 </span>
               </div>
             </div>
+          </div>
+          <div class="col-md-6 m--margin-bottom-10-mobile">
+            <!-- 'm  margin-bottom-10-mobile' for adaptive make-up  -->
+            <div class="m-form__control">
+              <mat-form-field class="filtreSociedad">
+                <mat-select [(value)]="selected" (selectionChange)="tt($event)">
+                  <mat-option value=""
+                    >Selecciona un código de sociedad</mat-option
+                  >
+                  <mat-option value="3005">3005</mat-option>
+                  <mat-option value="3006">3006</mat-option>
+                  <mat-option value="3007">3007</mat-option>
+                  <mat-option value="3015">3015</mat-option>
+                  <mat-option value="3016">3016</mat-option>
+                  <mat-option value="3018">3018</mat-option>
+                  <mat-option value="3038">3038</mat-option>
+                  <mat-option value="3039">3039</mat-option>
+                  <mat-option value="3040">3040</mat-option>
+                  <mat-option value="3051">3051</mat-option>
+                  <mat-option value="3052">3052</mat-option>
+                </mat-select>
+                <mat-hint align="start">
+                  <strong>Filtrado</strong> por nombre</mat-hint
+                >
+              </mat-form-field>
+              <!-- <p>You selected: {{selected}}</p> -->
+            </div>
+          </div>
+
+          <!-- <div class="col-md-2 m--margin-bottom-10-mobile">
+
+						<div class="m-form__control">
+							<mat-form-field class="mat-form-field-fluid">
+								<mat-select [(value)]="filterType" (selectionChange)="tt($event)">
+									<mat-option value="">All</mat-option>
+									<mat-option value="0">Business</mat-option>
+									<mat-option value="1">Individual</mat-option>
+								</mat-select>
+								<mat-hint align="start">
+									<strong>Filter</strong> by Type</mat-hint>
+							</mat-form-field>
+						</div>
+					</div> -->
+
+          <div class="col-md-6 m--margin-bottom-10-mobile searcherImm">
+            <mat-form-field class="mat-form-field-fluid">
+              <input
+                matInput
+                placeholder="Search customer"
+                #searchInput
+				(ngModelChange)="applyFilter2($event.target.value)"
+				(keyup)="applyFilter2($event.target.value)"
+                
+                placeholder="Buscar immuebles"
+                class="codiSocietatInput"
+              />
+              <mat-hint align="start">
+                <strong>Buscar</strong> en todos los campos</mat-hint
+              >
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 m--margin-bottom-10-mobile">
+            <!-- 'm  margin-bottom-10-mobile' for adaptive make-up  -->
+            <div class="m-form__control">
+              <mat-form-field class="filtreSociedad">
+                <mat-select
+                  [(value)]="selectedProvincias"
+                  (selectionChange)="tt($event)"
+                >
+                  <mat-option value="">Selecciona una provincia</mat-option>
+                  <mat-option *ngFor="let o of seasons" value="{{ o }}">{{
+                    o
+                  }}</mat-option>
+                </mat-select>
+                <mat-hint align="start">
+                  <strong>Filtrado</strong> por pronvicia:
+                  {{ selectedProvincias }}</mat-hint
+                >
+			  </mat-form-field>
+			  <mat-form-field>
+				  <!-- 
+					  Aqui si quieres asignar el valor de la provincia por el codigo de provincia,
+					  debes hacerlo en el typescript mediante this.provinciaFilter.setValue()
+					  Te he quitado el [(value)]="" Eso no es correcto y puede traerte problemas
+					  
+					-->
+					<input matInput #X_PROVINCIA [formControl]="provinciaFilter" placeholder="X_PROVINCIA">
+				</mat-form-field>
+
+			  <mat-form-field>
+					<input matInput #X_ID [formControl]="idFilter" placeholder="X_ID">
+				  </mat-form-field>
+			  <!-- <p>You selected: {{selected}}</p> myFilter -->
+		
+            </div>
 		  </div>
+		  <p><code>{{provinciaFilter.value | json}}</code></p>
+		  <p><code>{{idFilter.value | json}}</code></p>
 		  <div class="col-md-12">
 			  <div class="row">
 					<h3 class="m-portlet__head-text visibility-columns">
@@ -127,91 +215,6 @@
 			  <mat-icon>done_all</mat-icon> Mostrar todas las columnas
 			</button>				
 		  </div>
-		  <h3 class="m-portlet__head-text visibility-columns">
-				<span>Filtraje por columnas</span>
-			  </h3>
-		  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_ID</mat-label>
-				  <input matInput [formControl]="idFilter" />
-				</mat-form-field>
-			  </div>
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter">
-				  <mat-label>X_CODI_SOCIETAT</mat-label>
-				  <input matInput [formControl]="codiImmobleFilter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_DIRECCIO_COMPLERTA</mat-label>
-				  <input matInput [formControl]="direccioComplertaFilter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_POBLACIO_UBICACIO</mat-label>
-				  <input matInput [formControl]="poblacioFilter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_PROVINCIA</mat-label>
-				  <input matInput [formControl]="provinciaFilter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_CALIFICACION_REVISADO_05002</mat-label>
-				  <input matInput [formControl]="_05002Filter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_N_EXPD_CALIF_REVISADO_05003</mat-label>
-				  <input matInput [formControl]="_05003Filter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_REGIMEN_1_Revisado_05006</mat-label>
-				  <input matInput [formControl]="_05006Filter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_FECHA_EXPD_CALIF_REVISADO_05004</mat-label>
-				  <input matInput [formControl]="_05004Filter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_PRECIO_MAX_VENTA_REVISADO_05011</mat-label>
-				  <input matInput [formControl]="_05011Filter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_COMERCIALIZACION_REVISADO_05009</mat-label>
-				  <input matInput [formControl]="_05009Filter" />
-				</mat-form-field>
-			  </div>
-	
-			  <div class="col-md-3 m--margin-bottom-10-mobile">
-				<mat-form-field class="filter" floatLabel="never">
-				  <mat-label>X_PRECIO_MAX_RENTA_REVISADO_05013</mat-label>
-				  <input matInput [formControl]="_05013Filter" />
-				</mat-form-field>
-			  </div>
           <!-- <div class="col-md-6">ss</div>
 					<div class="col-md-4 mt-4">
 							<div [hidden]="!messageNotif" [ngClass]="{show: messageNotif, 'alert-danger': type === 'error', 'alert-success': type === 'success', 'alert-info': type === 'info'}" class="m-alert m-alert--outline m-alert--outline-2x alert fade" role="alert" #alertNotice>

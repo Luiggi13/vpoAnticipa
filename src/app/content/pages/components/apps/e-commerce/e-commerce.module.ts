@@ -28,7 +28,7 @@ import { FetchEntityDialogComponent } from './_shared/fetch-entity-dialog/fetch-
 import { UpdateStatusDialogComponent } from './_shared/update-status-dialog/update-status-dialog.component';
 import { AlertComponent } from './_shared/alert/alert.component';
 // Customers
-import { CustomersListComponent } from './customers/customers-list/customers-list.component';
+import { CustomersListComponent, ButtonViewComponent } from './customers/customers-list/customers-list.component';
 import { CustomerEditDialogComponent } from './customers/customer-edit/customer-edit.dialog.component';
 // Products
 import { ProductsListComponent } from './products/products-list/products-list.component';
@@ -68,7 +68,10 @@ import {
 	MatTooltipModule
 } from '@angular/material';
 import { environment } from '../../../../../../environments/environment';
-import { TableFuncs } from './customers/customers-list/table-funcs';
+// import { TableFuncs } from './customers/customers-list/table-funcs';
+// import { OutXPipe } from './out-x.pipe';
+import { MyInputComponent } from './customers/myinput/myinput.component';
+import { ChristianComponent } from './customers/christian/christian.component';
 
 const routes: Routes = [
 	{
@@ -83,6 +86,14 @@ const routes: Routes = [
 			{
 				path: 'vpo-anticipa',
 				component: CustomersListComponent
+			},
+			{
+				path: 'christian',
+				component: ChristianComponent
+			},
+			{
+				path: 'datos',
+				component: MyInputComponent
 			},
 			{
 				path: 'orders',
@@ -142,7 +153,7 @@ const routes: Routes = [
 		environment.isMockEnabled ? HttpClientInMemoryWebApiModule.forFeature(FakeApiService) : []
 	],
 	providers: [
-		TableFuncs,
+		// TableFuncs,
 		// InterceptService,
       	// {
         // 	provide: HTTP_INTERCEPTORS,
@@ -178,6 +189,7 @@ const routes: Routes = [
 	],
 	declarations: [
 		ECommerceComponent,
+		// OutXPipe,
 		// Shared
 		ActionNotificationComponent,
 		DeleteEntityDialogComponent,
@@ -186,6 +198,7 @@ const routes: Routes = [
 		AlertComponent,
 		// Customers
 		CustomersListComponent,
+		MyInputComponent,
 		CustomerEditDialogComponent,
 		// Orders
 		OrdersListComponent,
@@ -195,7 +208,9 @@ const routes: Routes = [
 		ProductEditComponent,
 		RemarksListComponent,
 		SpecificationsListComponent,
-		SpecificationEditDialogComponent
+		SpecificationEditDialogComponent,
+		ChristianComponent,
+		ButtonViewComponent
 	]
 })
 export class ECommerceModule { }
