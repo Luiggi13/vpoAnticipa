@@ -15,14 +15,21 @@ export class PortalAuthService {
     ) {
 	}
 
-isAutenticated(param) {
-		if ( this.mytoken  !== undefined && this.usertype !== undefined ) {
-            console.log('autenticado');
-		} else if ( this.mytoken  === undefined && this.usertype === undefined ) {
-            console.log('no autenticado');
-            this.router.navigate(['login']);
-		}
+isAutenticated() {
+    if ( localStorage.getItem('token') == null) {
+        console.warn('false desde isAuthenticated');
+        return false;
+    } else {
+        console.warn('true desde isAuthenticated');
+        return true;
     }
+}
+isAutenticatedLogin() {
+    if ( localStorage.getItem('token') !== null) {
+        console.log('no autenticado');
+        this.router.navigate(['/']);
+    }
+}
     wantLogout(param: string) {
         if (param === 'yes') {
             window.localStorage.removeItem('token');
@@ -32,7 +39,7 @@ isAutenticated(param) {
             this.router.navigate(['login']);
 
         } else {
-            this.isAutenticated('login');
+            this.isAutenticated();
         }
 
     }

@@ -1,75 +1,88 @@
-<!--Begin::Section-->
-<div class="row">
-	<div class="col-xl-4">
-		<m-finance-stats></m-finance-stats>
-	</div>
-	<div class="col-xl-4">
-		<m-blog></m-blog>
-	</div>
-	<div class="col-xl-4">
-		<m-packages></m-packages>
-	</div>
-</div>
-<!--End::Section-->
-
-<!--Begin::Section-->
-<div class="m-portlet">
-	<div class="m-portlet__body m-portlet__body--no-padding">
-		<div class="row m-row--no-padding m-row--col-separator-xl">
-			<div class="col-xl-4">
-				<m-stat></m-stat>
-			</div>
-			<div class="col-xl-4">
-				<m-bar-chart></m-bar-chart>
-			</div>
-			<div class="col-xl-4">
-				<m-doughnut-chart></m-doughnut-chart>
-			</div>
+<!-- <h4 class="font-weight-bold py-3 mb-4">
+	
+		<div class="text-muted text-tiny mt-1">
+		  <small class="font-weight-normal"
+			>Today is Thursday, 13 June 2019</small
+		  >
 		</div>
-	</div>
+	  </h4> -->
+<div class="m-portlet">
+  <div class="m-portlet__body m-portlet graphic_one">
+    <div class="row m-row--no-padding m-row--col-separator-xl">
+      <div>
+        <h4 class="svpo_title">PORTFOLIO</h4>
+
+        <div style="height: 350px" class="graphic">
+          <ngx-charts-bar-vertical-2d
+            [results]="multiData"
+            [xAxis]="true"
+            [yAxis]="false"
+            [legend]="true"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            [scheme]="'vivid'"
+            xAxisLabel=" "
+            yAxisLabel=" "
+            showDataLabel="true"
+            [legendTitle]="false"
+            legendPosition="'below'"
+          >
+          </ngx-charts-bar-vertical-2d>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <!--End::Section-->
 
-<!--Begin::Section-->
-<div class="row">
-	<div class="col-xl-6">
-		<m-tasks></m-tasks>
-	</div>
-	<div class="col-xl-6">
-		<m-support-tickets></m-support-tickets>
-	</div>
-</div>
-<!--End::Section-->
+<div class="m-portlet">
+  <div class="m-portlet__body m-portlet graphic_one">
+    <div class="row m-row--no-padding m-row--col-separator-xl">
+      <div>
+        <h4 class="svpo_title">SOCIMI</h4>
 
-<!--Begin::Section-->
-<div class="row">
-	<div class="col-xl-6">
-		<m-recent-activities></m-recent-activities>
-	</div>
-	<div class="col-xl-6">
-		<m-recent-notifications></m-recent-notifications>
-	</div>
+        <div style="height: 350px">
+          <ngx-charts-bar-vertical-2d
+            [results]="multiData2"
+            [xAxis]="true"
+            [yAxis]="false"
+            [legend]="true"
+            [legendTitle]="false"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            [scheme]="'vivid'"
+            xAxisLabel=" "
+            yAxisLabel=" "
+            showDataLabel="true"
+            legendPosition="'below'"
+          >
+          </ngx-charts-bar-vertical-2d>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<!--End::Section-->
+<div class="m-portlet">
+  <div class="m-portlet__body m-portlet graphic_one">
+    <div class="row m-row--no-padding m-row--col-separator-xl">
+      <div>
+        <h4 class="svpo_title">EVOLUCIÓN</h4>
 
-<!--Begin::Section-->
-<div class="row">
-	<div class="col-xl-8">
-		<m-data-table></m-data-table>
-	</div>
-	<div class="col-xl-4">
-		<m-audit-log></m-audit-log>
-	</div>
+        <div style="height: 350px">
+          <ngx-charts-line-chart
+            [results]="multiData3"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="true"
+            [legendTitle]="false"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            [scheme]="'vivid'"
+            legendPosition="'below'"
+          >
+          </ngx-charts-line-chart>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<!--End::Section-->
-
-<!--Begin::Section-->
-<div class="row">
-	<div class="col-xl-8">
-		<m-best-seller></m-best-seller>
-	</div>
-	<div class="col-xl-4">
-		<m-author-profit></m-author-profit>
-	</div>
-</div>
-<!--End::Section-->

@@ -19,6 +19,7 @@ import * as objectPath from 'object-path';
 import { TranslateService } from '@ngx-translate/core';
 import { SpinnerButtonOptions } from '../../../partials/content/general/spinner-button/button-options.interface';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { PortalAuthService } from '../../../../core/auth/portal-auth.service';
 
 @Component({
 	selector: 'm-login',
@@ -31,7 +32,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 	/* colores console */
 
 	/* colores console */
-	public model: any = { email: 'eribes@arnal.es', password: 'ukA5uLqc8k' };
+	public model: any = { email: '', password: '' };
+	// public model: any = { email: 'eribes', password: 'ukA5uLqc8k' };
 
 	errorResponse = '';
 	showErrorLogin = false;
@@ -65,28 +67,17 @@ export class LoginComponent implements OnInit, OnDestroy {
 		private router: Router,
 		public authNoticeService: AuthNoticeService,
 		private translate: TranslateService,
-		private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef,
+		private authPortal: PortalAuthService,
 		private http: HttpClient
 	) {
+
 		window.localStorage.setItem('language', 'es');
 		// console.log('%c Oh my heavens! ', 'background:'+ this.rojo+'; color: '+ this.rojo);
 
 	}
 
 	submit() {
-		// this.spinner.active = true;
-		// if (this.validate(this.f)) {
-		// 	this.authService.login(this.model).subscribe(response => {
-		// 		if (typeof response !== 'undefined') {
-		// 			this.router.navigate(['/']);
-		// 		} else {
-		// 			this.authNoticeService.setNotice(this.translate.instant('AUTH.VALIDATION.INVALID_LOGIN'), 'error');
-		// 		}
-		// 		this.spinner.active = false;
-		// 		this.cdr.detectChanges();
-		// 	});
-		// }
-		// this.demoSwitch(this.myInput.nativeElement.value);
 		this.toAPI(this.myInput.nativeElement.value, this.myPass.nativeElement.value);
 
 	}
@@ -120,8 +111,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 				window.localStorage.setItem('token', myTok['token']);
 				window.localStorage.setItem('usertype', 'user');
 
-				if (this.myInput.nativeElement.value == 'eferro@arnal.es' || this.myInput.nativeElement.value == 'dplanas@arnal.es'
-				|| this.myInput.nativeElement.value == 'eribes@arnal.es') {
+				if (this.myInput.nativeElement.value === 'eferro@arnal.es' || this.myInput.nativeElement.value === 'dplanas@arnal.es'
+				|| this.myInput.nativeElement.value === 'eribes@arnal.es') {
 					// this.errorResponse = data['message'];
 					localStorage.setItem('usertype', 'admin');
 				} else {
@@ -162,15 +153,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 						// console.log('no tienes acceso con el mail : ' + user);
 						break;
 
-				}
+        }
+        // this.authPortal.isAutenticated('/');
+        
 				window.localStorage.setItem('email', this.myInput.nativeElement.value);
 				window.localStorage.setItem('usuario', nombreUsuario);
 
-				this.router.navigate(['bpo/vpo-anticipa']);
-				// if(window.localStorage.getItem('usertype') && window.localStorage.getItem('token')){
-				// 	this.router.navigate(['bpo/vpo-anticipa']);
+				this.router.navigate(['/']);
 
-				// 	}
 
 			},
 				error => {
@@ -203,7 +193,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
 
-
+				
 
 		// if(window.localStorage.getItem('token') && window.localStorage.getItem('usertype')){
 		// 			  this.router.navigate(['anticipa']);
@@ -211,8 +201,17 @@ export class LoginComponent implements OnInit, OnDestroy {
 		// }
 
 	}
-	ngOnInit(): void {
-		// demo message to show
+	ngOnInit() {
+    // demo message to show
+    if ( this.authPortal.isAutenticated() ) {
+      this.router.navigate(['/']);
+    } else {
+      console.log('false desde propi login comp');
+    }
+    
+        // this.router.navigate(['/']);
+    
+    
 		if (!this.authNoticeService.onNoticeChanged$.getValue()) {
 			const initialNotice = `Use account
 			<strong>admin@demo.com</strong> and password

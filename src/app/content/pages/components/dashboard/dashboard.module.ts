@@ -7,10 +7,16 @@ import { PartialsModule } from '../../../partials/partials.module';
 import { ListTimelineModule } from '../../../partials/layout/quick-sidebar/list-timeline/list-timeline.module';
 import { WidgetChartsModule } from '../../../partials/content/widgets/charts/widget-charts.module';
 import { PortalAuthService } from '../../../../core/auth/portal-auth.service';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ChartsModule as Ng2ChartsModule } from 'ng2-charts/ng2-charts';
+
 
 @NgModule({
 	imports: [
 		CommonModule,
+		NgxChartsModule,
+
+    Ng2ChartsModule,
 		LayoutModule,
 		PartialsModule,
 		ListTimelineModule,

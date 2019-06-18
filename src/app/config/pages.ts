@@ -7,7 +7,7 @@ export class PagesConfig implements ConfigModel {
 		this.config = {
 			'/': {
 				page: {
-					title: 'Dashboard',
+					title: 'Seguimiento VPO - Task Force',
 					desc: 'Latest updates and statistic charts'
 				}
 			},

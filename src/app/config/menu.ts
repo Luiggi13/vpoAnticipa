@@ -337,7 +337,7 @@ export class MenuConfig implements ConfigModel {
 							alignment: 'left',
 							items: [
 								{
-									title: 'BPO Documental',
+									title: 'BPO Legal',
 									tooltip: 'Non functional dummy link',
 									icon: 'flaticon-business',
 									submenu: {
@@ -456,7 +456,13 @@ export class MenuConfig implements ConfigModel {
 				self: {},
 				items: [
 					{
-						title: 'BPO Documental',
+						title: 'Seguimiento VPO',
+						bullet: 'dot',
+						icon: 'flaticon-web',
+						page: '/'
+					},
+					{
+						title: 'BPO Legal',
 						root: true,
 						bullet: 'dot',
 						icon: 'flaticon-web',

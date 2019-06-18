@@ -44,22 +44,7 @@ let ELEMENT_DATA: MyOwnData[] = [];
 			<button (click)="onClick()">{{ renderValue }}</button>
 		`,
 })
-export class ButtonViewComponent implements OnInit {
-	renderValue: string;
 
-	@Input() value: string | number;
-	@Input() rowData: any;
-
-	@Output() save: EventEmitter<any> = new EventEmitter();
-
-	ngOnInit() {
-		this.renderValue = this.value.toString().toUpperCase();
-	}
-
-	onClick() {
-		this.save.emit(this.rowData);
-	}
-}
 @Component({
 	selector: 'm-myinput.component',
 	templateUrl: './myinput.component.html',

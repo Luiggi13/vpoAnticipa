@@ -30,6 +30,9 @@ import { AuthNotice } from '../../../../../../../core/auth/auth-notice.interface
 // import { TableFuncs } from './table-funcs';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import { SubheaderService } from '../../../../../../../core/services/layout/subheader.service';
+import { BarVerticalStackedComponent } from '@swimlane/ngx-charts';
+import { Router } from '@angular/router';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8';
 const EXCEL_EXT = '.xlsx';
@@ -79,7 +82,7 @@ export class CustomersListComponent implements AfterViewInit, OnInit {
 	// filterValues;
 	// form binding
 nameFilter 					= new FormControl('');
-idFilter 					= new FormControl('');
+codiImmobleRealFilter		= new FormControl('');
 codiImmobleFilter 			= new FormControl('');
 direccioComplertaFilter 	= new FormControl('');
 poblacioFilter 				= new FormControl('');
@@ -93,6 +96,7 @@ _05009Filter 				= new FormControl('');
 _05013Filter 				= new FormControl('');
 filterValues = {
     X_ID: '',
+    X_CODI_IMMOBLE: '',
     X_CODI_SOCIETAT: '',
     X_DIRECCIO_COMPLERTA: '',
     X_POBLACIO_UBICACIO: '',
@@ -127,21 +131,21 @@ filterValues = {
 	_tmp = [];
 
 	columnDefinitions = [
-		{ def: 'select', showItem: true },
-		{ def: 'X_ID', showItem: true },
-		{ def: 'X_CODI_IMMOBLE', showItem: true },
-		{ def: 'X_CODI_SOCIETAT', showItem: true },
-		{ def: 'X_DIRECCIO_COMPLERTA', showItem: true },
-		{ def: 'X_POBLACIO_UBICACIO', showItem: true },
-		{ def: 'X_PROVINCIA', showItem: true },
-		{ def: 'X_CALIFICACION_REVISADO_05002', showItem: true },
-		{ def: 'X_N_EXPD_CALIF_REVISADO_05003', showItem: true },
-		{ def: 'X_REGIMEN_1_Revisado_05006', showItem: true },
-		{ def: 'X_FECHA_EXPD_CALIF_REVISADO_05004', showItem: true },
-		{ def: 'X_PRECIO_MAX_VENTA_REVISADO_05011', showItem: true },
-		{ def: 'X_COMERCIALIZACION_REVISADO_05009', showItem: true },
-		{ def: 'X_PRECIO_MAX_RENTA_REVISADO_05013', showItem: true },
-		{ def: 'actions', showItem: true }
+		{ def: 'select', showItem: true , label: 'select'},
+		{ def: 'X_ID', showItem: true , label: 'ID'},
+		{ def: 'X_CODI_IMMOBLE', showItem: true , label: 'CODI IMMOBLE'},
+		{ def: 'X_CODI_SOCIETAT', showItem: true , label: 'CODI SOCIETAT'},
+		{ def: 'X_DIRECCIO_COMPLERTA', showItem: true , label: 'DIRECCIO COMPLERTA'},
+		{ def: 'X_POBLACIO_UBICACIO', showItem: true , label: 'POBLACIO UBICACIO'},
+		{ def: 'X_PROVINCIA', showItem: true , label: 'PROVINCIA'},
+		{ def: 'X_CALIFICACION_REVISADO_05002', showItem: true , label: 'CALIFICACION REVISADO 05002'},
+		{ def: 'X_N_EXPD_CALIF_REVISADO_05003', showItem: true , label: 'N EXPD CALIF REVISADO 05003'},
+		{ def: 'X_REGIMEN_1_Revisado_05006', showItem: true , label: 'REGIMEN 1 Revisado 05006'},
+		{ def: 'X_FECHA_EXPD_CALIF_REVISADO_05004', showItem: true , label: 'FECHA EXPD CALIF REVISADO 05004'},
+		{ def: 'X_PRECIO_MAX_VENTA_REVISADO_05011', showItem: true , label: 'PRECIO MAX VENTA REVISADO 05011'},
+		{ def: 'X_COMERCIALIZACION_REVISADO_05009', showItem: true , label: 'COMERCIALIZACION REVISADO 05009'},
+		{ def: 'X_PRECIO_MAX_RENTA_REVISADO_05013', showItem: true , label: 'PRECIO MAX RENTA REVISADO 05013'},
+		{ def: 'actions', showItem: true , label: 'actions'}
 	];
 
 	rows = [];
@@ -168,7 +172,7 @@ filterValues = {
 	idImmueble: string = '';
 	codiImmoble: string = '';
 	showDetails: boolean = false;
-	kindUser = 'admin';
+	kindUser = '';
 	checkboxValue: string;
 	estadoPropio: boolean = null;
 
@@ -405,14 +409,19 @@ filterValues = {
 		private authNoticeService: AuthNoticeService,
 		private customersService: CustomersService,
 		private fb: FormBuilder,
+		private router: Router,
 		public dialog: MatDialog,
 		public snackBar: MatSnackBar,
 		private layoutUtilsService: LayoutUtilsService,
 		private translate: TranslateService,
 		private http: HttpClient,
 		private authPortal: PortalAuthService,
+		private subheaderService: SubheaderService
+
 		// private serviceTables: TableFuncs
 	) {
+		this.subheaderService.setTitle('Consulta VPO ');
+	this.kindUser = localStorage.getItem('usertype');
 		this.getval();
     this.showFilteredColumns();
     this.dataSource.data = this.val;
@@ -433,7 +442,7 @@ filterValues = {
 			this.checkboxValue = type.name;
 
 			this.arraychecks.push(this.checkboxValue);
-			console.warn(this.arraychecks);
+			// console.warn(this.arraychecks);
 
 
 		} else {
@@ -448,7 +457,7 @@ filterValues = {
 
 			// eliminar del array el checkbox descheckeado
 			this.checkboxValue = '';
-			console.log('no' + this.arraychecks);
+			// console.log('no' + this.arraychecks);
 		}
 	}
 
@@ -471,16 +480,24 @@ filterValues = {
 		this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
 	}
 	ngOnInit() {
-		this.authPortal.isAutenticated('login');
+		if ( !this.authPortal.isAutenticated() ) {
+			this.router.navigate(['/login']);
+		  } else {
+			  console.log('logged from component');
+		  }
+		// if ( !this.authPortal.isAutenticated() ) {
+		// 	this.router.navigate(['/login']);
+		// }
 		
 		// this.iDFilter = new FormControl();
 		// this.provinciaFilter = new FormControl();
 		// this.filterValues = { X_ID: '', X_PROVINCIA: '' };
 		// this.myFilter();
-		this.idFilter.valueChanges
+		this.codiImmobleRealFilter.valueChanges
 		.subscribe(
-		  name => {
-			this.filterValues.X_ID = name;
+		  codiImmobleReal => {
+			this.filterValues.X_CODI_IMMOBLE = codiImmobleReal;
+			this.filterValues.X_CODI_IMMOBLE = this.filterValues.X_CODI_IMMOBLE.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -488,6 +505,7 @@ filterValues = {
 		.subscribe(
 		  codiImmoble => {
 			this.filterValues.X_CODI_SOCIETAT = codiImmoble;
+			this.filterValues.X_CODI_SOCIETAT = this.filterValues.X_CODI_SOCIETAT.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -495,6 +513,7 @@ filterValues = {
 		.subscribe(
 		  direccioComplerta => {
 			this.filterValues.X_DIRECCIO_COMPLERTA = direccioComplerta;
+			this.filterValues.X_DIRECCIO_COMPLERTA = this.filterValues.X_DIRECCIO_COMPLERTA.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -502,6 +521,7 @@ filterValues = {
 		.subscribe(
 		  poblacioRebuda => {
 			this.filterValues.X_POBLACIO_UBICACIO = poblacioRebuda;
+			this.filterValues.X_POBLACIO_UBICACIO = this.filterValues.X_POBLACIO_UBICACIO.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -509,6 +529,7 @@ filterValues = {
 		.subscribe(
 		  provinciaRebuda => {
 			this.filterValues.X_PROVINCIA = provinciaRebuda;
+			this.filterValues.X_PROVINCIA = this.filterValues.X_PROVINCIA.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -516,6 +537,7 @@ filterValues = {
 		.subscribe(
 		  _05002 => {
 			this.filterValues.X_CALIFICACION_REVISADO_05002 = _05002;
+			this.filterValues.X_CALIFICACION_REVISADO_05002 = this.filterValues.X_CALIFICACION_REVISADO_05002.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -523,6 +545,7 @@ filterValues = {
 		.subscribe(
 		  _05003 => {
 			this.filterValues.X_N_EXPD_CALIF_REVISADO_05003 = _05003;
+			this.filterValues.X_N_EXPD_CALIF_REVISADO_05003 = this.filterValues.X_N_EXPD_CALIF_REVISADO_05003.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -530,6 +553,7 @@ filterValues = {
 		.subscribe(
 		  _05006 => {
 			this.filterValues.X_REGIMEN_1_Revisado_05006 = _05006;
+			this.filterValues.X_REGIMEN_1_Revisado_05006 = this.filterValues.X_REGIMEN_1_Revisado_05006.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -537,6 +561,7 @@ filterValues = {
 		.subscribe(
 		  _05004 => {
 			this.filterValues.X_FECHA_EXPD_CALIF_REVISADO_05004 = _05004;
+			this.filterValues.X_FECHA_EXPD_CALIF_REVISADO_05004 = this.filterValues.X_FECHA_EXPD_CALIF_REVISADO_05004.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -544,6 +569,7 @@ filterValues = {
 		.subscribe(
 		  _05011 => {
 			this.filterValues.X_PRECIO_MAX_VENTA_REVISADO_05011 = _05011;
+			this.filterValues.X_PRECIO_MAX_VENTA_REVISADO_05011 = this.filterValues.X_PRECIO_MAX_VENTA_REVISADO_05011.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -551,6 +577,7 @@ filterValues = {
 		.subscribe(
 		  _05009 => {
 			this.filterValues.X_COMERCIALIZACION_REVISADO_05009 = _05009;
+			this.filterValues.X_COMERCIALIZACION_REVISADO_05009 = this.filterValues.X_COMERCIALIZACION_REVISADO_05009.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -558,6 +585,7 @@ filterValues = {
 		.subscribe(
 		  _05013 => {
 			this.filterValues.X_PRECIO_MAX_RENTA_REVISADO_05013 = _05013;
+			this.filterValues.X_PRECIO_MAX_RENTA_REVISADO_05013 = this.filterValues.X_PRECIO_MAX_RENTA_REVISADO_05013.toUpperCase();
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		  }
 		)
@@ -570,34 +598,36 @@ filterValues = {
 	createFilter(): (data: any, filter: string) => boolean {
 		let filterFunction = function(data, filter): boolean {
 		  let searchTerms = JSON.parse(filter);
-		  return data.X_ID.toString().toLowerCase().indexOf(searchTerms.X_ID) !== -1
-			&& data.X_CODI_SOCIETAT.toString().toLowerCase().indexOf(searchTerms.X_CODI_SOCIETAT) !== -1
-			&& data.X_DIRECCIO_COMPLERTA.toLowerCase().indexOf(searchTerms.X_DIRECCIO_COMPLERTA) !== -1
-			&& data.X_POBLACIO_UBICACIO.toLowerCase().indexOf(searchTerms.X_POBLACIO_UBICACIO) !== -1
-			&& data.X_PROVINCIA.toLowerCase().indexOf(searchTerms.X_PROVINCIA) !== -1
-			&& data.X_CALIFICACION_REVISADO_05002.toLowerCase().indexOf(searchTerms.X_CALIFICACION_REVISADO_05002) !== -1
-			&& data.X_N_EXPD_CALIF_REVISADO_05003.toLowerCase().indexOf(searchTerms.X_N_EXPD_CALIF_REVISADO_05003) !== -1
-			&& data.X_REGIMEN_1_Revisado_05006.toLowerCase().indexOf(searchTerms.X_REGIMEN_1_Revisado_05006) !== -1
-			&& data.X_FECHA_EXPD_CALIF_REVISADO_05004.toLowerCase().indexOf(searchTerms.X_FECHA_EXPD_CALIF_REVISADO_05004) !== -1
-			&& data.X_PRECIO_MAX_VENTA_REVISADO_05011.toLowerCase().indexOf(searchTerms.X_PRECIO_MAX_VENTA_REVISADO_05011) !== -1
-			&& data.X_COMERCIALIZACION_REVISADO_05009.toLowerCase().indexOf(searchTerms.X_COMERCIALIZACION_REVISADO_05009) !== -1
-			&& data.X_PRECIO_MAX_RENTA_REVISADO_05013.toLowerCase().indexOf(searchTerms.X_PRECIO_MAX_RENTA_REVISADO_05013) !== -1;
+		  return data.X_CODI_IMMOBLE.toString().indexOf(searchTerms.X_CODI_IMMOBLE) !== -1
+			&& data.X_CODI_SOCIETAT.toString().indexOf(searchTerms.X_CODI_SOCIETAT) !== -1
+			&& data.X_DIRECCIO_COMPLERTA.indexOf(searchTerms.X_DIRECCIO_COMPLERTA) !== -1
+			&& data.X_POBLACIO_UBICACIO.indexOf(searchTerms.X_POBLACIO_UBICACIO) !== -1
+			&& data.X_PROVINCIA.indexOf(searchTerms.X_PROVINCIA) !== -1
+			&& data.X_CALIFICACION_REVISADO_05002.indexOf(searchTerms.X_CALIFICACION_REVISADO_05002) !== -1
+			&& data.X_N_EXPD_CALIF_REVISADO_05003.indexOf(searchTerms.X_N_EXPD_CALIF_REVISADO_05003) !== -1
+			&& data.X_REGIMEN_1_Revisado_05006.indexOf(searchTerms.X_REGIMEN_1_Revisado_05006) !== -1
+			&& data.X_FECHA_EXPD_CALIF_REVISADO_05004.indexOf(searchTerms.X_FECHA_EXPD_CALIF_REVISADO_05004) !== -1
+			&& data.X_PRECIO_MAX_VENTA_REVISADO_05011.indexOf(searchTerms.X_PRECIO_MAX_VENTA_REVISADO_05011) !== -1
+			&& data.X_COMERCIALIZACION_REVISADO_05009.indexOf(searchTerms.X_COMERCIALIZACION_REVISADO_05009) !== -1
+			&& data.X_PRECIO_MAX_RENTA_REVISADO_05013.indexOf(searchTerms.X_PRECIO_MAX_RENTA_REVISADO_05013) !== -1;
 		}
 		return filterFunction;
 	  }
 	myFilter() {
 		this.provinciaFilter.valueChanges
 			.subscribe(data => {
-				console.log('data from myFilter: ' + this.filterValues['X_PROVINCIA']);
+				// console.log('data from myFilter: ' + this.filterValues['X_PROVINCIA']);
 				this.filterValues['X_PROVINCIA'] = data;
 				this.dataSource.filter = JSON.stringify(this.filterValues);
 			});
 
-		this.idFilter.valueChanges
+		this.codiImmobleRealFilter.valueChanges
 			.subscribe(data => {
-				console.log('data from myFilter: ' + this.filterValues['X_ID']);
-				this.filterValues['X_ID'] = data;
-				this.dataSource.filter = JSON.stringify(this.filterValues);
+				// console.log('data from myFilter: ' + this.filterValues['X_ID']);
+				let temp_;
+				this.filterValues['X_CODI_IMMOBLE'] = data;
+				temp_ = JSON.stringify(this.filterValues);
+				this.dataSource.filter = temp_.toUpperCase();
 			});
 
 		this.dataSource.filterPredicate = this.createFilter();
@@ -605,7 +635,7 @@ filterValues = {
 	// myFilterID(param?: string) {
 	// 	this.iDFilter.valueChanges
 	//     .subscribe(data => {
-	// console.log('data from myFilter: ' + this.filterValues['X_ID']);
+	// // console.log('data from myFilter: ' + this.filterValues['X_ID']);
 	//       this.filterValues['X_ID'] = data;
 	//       this.dataSource.filter = JSON.stringify(this.filterValues);
 	// 	});
@@ -638,7 +668,7 @@ filterValues = {
 		let fileToUpload = <File>files[0];
 		const formData = new FormData();
 		formData.append('file', fileToUpload, fileToUpload.name);
-		console.warn(fileToUpload.name);
+		// console.warn(fileToUpload.name);
 		this.http.post(`${this.apiUrl}/api/upload/`, formData, { headers, reportProgress: true, observe: 'events' })
 			.subscribe(event => {
 				this.message1 = 'Cargando archivo';
@@ -678,7 +708,6 @@ filterValues = {
 			this.isLoading = false;
 			this._tmp = this.columnDefinitions; // columnas
 			this.val = data;
-			this.val = data;
       // this.dataSource = new MatTableDataSource(this.val);
       this.dataSource.data = this.val;
 			// this.dataSource = new MatTableDataSource(this.val);
@@ -687,7 +716,7 @@ filterValues = {
 		},
 			error => {
 				this.isLoading = false;
-				console.log('mi error en getval() : ', error);
+				// console.log('mi error en getval() : ', error);
 			}
 		);
 
@@ -701,8 +730,8 @@ filterValues = {
 	}
 	applyFilter(filterValue: string) {
 		this.dataSource.filter = filterValue.trim().toLowerCase();
-		console.log('filtro: ' + this.dataSource.filter);
-		console.log(this.dataSource.filteredData);
+		// console.log('filtro: ' + this.dataSource.filter);
+		// console.log(this.dataSource.filteredData);
 	}
 
 	isAllSelected() {
@@ -771,7 +800,7 @@ filterValues = {
 		this.applyFilter(valuestring.value);
 	}
 	viewProperty(idProperty, codiImmoble) {
-		console.warn('mi propiedad es: ' + idProperty);
+		// console.warn('mi propiedad es: ' + idProperty);
 		this.onAlertOpen(idProperty, codiImmoble);
 		this.showDetailsProperty();
 	}
@@ -806,7 +835,7 @@ filterValues = {
 	}
 
 	lanzarUnRegistro(flat) {
-		console.log(flat);
+		// console.log(flat);
 		let headers = new HttpHeaders({
 			'Content-Type': 'application/json',
 			'Authorization': 'Bearer ' + this.mytoken
@@ -821,7 +850,7 @@ filterValues = {
 		var select: string = 'select';
 		var actions: string = 'actions';
 		this.displayedColumnsNew = this.displayedColumns;
-		console.log(this.displayedColumnsNew);
+		// console.log(this.displayedColumnsNew);
 
 
 	}
@@ -838,7 +867,7 @@ filterValues = {
 			'X_CODI_PROMOCIO',
 			'X_PROMOCIO',
 			'actions'];
-		console.log(param);
+		// console.log(param);
 
 	}
 
@@ -887,7 +916,7 @@ filterValues = {
 	}
 
 	prova(idCol) {
-		console.log(idCol.data.X_ID);
+		// console.log(idCol.data.X_ID);
 		this.lanzarUnRegistro(idCol.data.X_ID)
 	}
 
@@ -898,7 +927,7 @@ filterValues = {
 		this._tmp = this.columnDefinitions.filter(column => {
 			if (column.showItem !== false) {
 				this.displayedColumns.push(column.def);
-				console.log(this.displayedColumns);
+				// console.log(this.displayedColumns);
 				this._tmp = this.columnDefinitions;
 
 			}
@@ -913,7 +942,7 @@ filterValues = {
 			column.showItem = true;
 			if (column.showItem) {
 				this.displayedColumns.push(column.def);
-				console.log(this.displayedColumns);
+				// console.log(this.displayedColumns);
 				this._tmp = this.columnDefinitions;
 
 			}
@@ -925,7 +954,7 @@ filterValues = {
 	// createFilter() {
 	// 	const filterFunction = function (data, filter): boolean {
 	// 		const searchTerms = JSON.parse(filter);
-	// 		console.log(searchTerms);
+	// // 		console.log(searchTerms);
 
 	// 		return data.X_PROVINCIA.toLowerCase().indexOf(searchTerms.X_PROVINCIA) !== -1
 	// 			&& data.X_ID.toString().indexOf(searchTerms.X_ID) !== -1;
@@ -934,7 +963,7 @@ filterValues = {
 	// }
 	resetValues() {
 		this.nameFilter.setValue('');
-		this.idFilter.setValue('');
+		this.codiImmobleRealFilter.setValue('');
 		this.codiImmobleFilter.setValue('');
 		this.direccioComplertaFilter.setValue('');
 		this.poblacioFilter.setValue('');

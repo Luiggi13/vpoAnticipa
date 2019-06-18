@@ -1,0 +1,17 @@
+.graphic ngx-charts-bar-vertical-2d ngx-charts-legend{
+    display: none!important;
+}
+.m-portlet__body.m-portlet.graphic_one{
+    padding: 2.2rem 2.2rem 6.2rem 2.2rem;
+}
+
+
+:host {
+    /deep/ngx-charts-bar-vertical-2d li.legend-label,
+    /deep/ngx-charts-line-chart li.legend-label
+    {
+        float: left;
+        width: 48%;
+        text-align: center;
+	}
+}

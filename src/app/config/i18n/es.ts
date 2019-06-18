@@ -74,7 +74,7 @@ export const locale = {
 			ECOMMERCE: 'eCommerce',
 			CUSTOMERS: {
 				CUSTOMERS: 'Customers',
-				CUSTOMERS_LIST: 'Lista de immuebles_ES',
+				CUSTOMERS_LIST: 'Lista de immuebles',
 				NEW_CUSTOMER: 'New Customer',
 				DELETE_CUSTOMER_SIMPLE: {
 					TITLE: 'Customer Delete',
